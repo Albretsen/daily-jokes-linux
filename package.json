@@ -1,0 +1,22 @@
+{
+  "name": "daily-jokes-linux",
+  "version": "1.0.0",
+  "description": "NodeJS app for Daily Jokes server",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Albretsen/daily-jokes-linux.git"
+  },
+  "author": "Asgeir Albretsen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Albretsen/daily-jokes-linux/issues"
+  },
+  "homepage": "https://github.com/Albretsen/daily-jokes-linux#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
