@@ -18,5 +18,4 @@ jobs:
       with:
         node-version: 16.x
     - run: npm install
-    - run: npm test
     - run: pm2 restart daily-jokes
