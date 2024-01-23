@@ -31,6 +31,11 @@ app.get("/", (req, res) => {
     res.send({"hello": "world!"});
 });
 
+// GET request handler
+app.get("/ping", (req, res) => {
+    res.send({"pong": "1"});
+});
+
 // POST request handler for posting a joke
 app.post("/joke", async (req, res) => {
     try {
