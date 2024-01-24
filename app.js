@@ -33,7 +33,7 @@ app.get("/", (req, res) => {
 
 // GET request handler
 app.get("/ping", (req, res) => {
-    res.send({"pong": "1"});
+    res.send({"pong": "2"});
 });
 
 // POST request handler for posting a joke
