@@ -16,6 +16,12 @@ jobs:
       with:
         node-version: 16.x
 
+    - name: Pull Latest Code
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: |
+        cd /projects/daily-jokes-linux
+        git pull origin main
+
     - name: Install Dependencies
       run: npm install
       working-directory: /projects/daily-jokes-linux
@@ -23,9 +29,3 @@ jobs:
     - name: Restart Application
       run: pm2 restart app
       working-directory: /projects/daily-jokes-linux
-
-    - name: Pull Latest Code
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: |
-        cd /projects/daily-jokes-linux
-        git pull origin main
