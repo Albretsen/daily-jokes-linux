@@ -1,10 +1,10 @@
-import dotenv from 'dotenv';
+const dotenv = require('dotenv');
 dotenv.config();
 
-import express from 'express';
-import cors from 'cors';
-import bodyParser from 'body-parser';
-import pkg from 'pg';
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const pkg = require('pg');
 const { Client } = pkg;
 
 const app = express();
@@ -25,6 +25,9 @@ const client = new Client({
 
 // Connect to the database
 client.connect();
+
+// Close DB
+client.end();
 
 // GET request handler
 app.get("/", (req, res) => {
@@ -50,4 +53,6 @@ app.post("/joke", async (req, res) => {
 });
 
 // Start the server
-app.listen(port, () => console.log("Listening on", port));
+const server = app.listen(port, () => console.log(`Listening on ${port}`));
+
+module.exports = { app, server };
