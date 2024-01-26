@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "NodeJS app for Daily Jokes server",
   "main": "app.js",
-  "type": "module",
   "scripts": {
     "test": "jest"
   },

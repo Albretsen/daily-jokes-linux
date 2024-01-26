@@ -15,7 +15,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // PostgreSQL client setup
-const client = new Client({
+/*const client = new Client({
     user: 'postgres',
     host: 'localhost',
     database: 'jokes',
@@ -27,7 +27,7 @@ const client = new Client({
 client.connect();
 
 // Close DB
-client.end();
+client.end();*/
 
 // GET request handler
 app.get("/", (req, res) => {
