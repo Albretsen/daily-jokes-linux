@@ -26,6 +26,10 @@ jobs:
       run: npm install
       working-directory: /projects/daily-jokes-linux
 
+    - name: Run tests
+      run: npm test
+      working-directory: /projects/daily-jokes-linux
+
     - name: Restart Application
       run: pm2 restart app
       working-directory: /projects/daily-jokes-linux
