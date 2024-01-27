@@ -7,7 +7,7 @@ describe('GET /ping', () => {
     it('should respond with a pong object', async () => {
         const response = await request.get('/ping');
         expect(response.statusCode).toBe(200);
-        expect(response.body).toEqual({ "pong": "2" });
+        expect(response.body).toEqual({ "pong": "1" });
     });
 
     afterAll(async () => {

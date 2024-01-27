@@ -25,14 +25,14 @@ const client = new Client({
 
 client.connect();
 
-// GET request handler
+// Default route
 app.get("/", (req, res) => {
     res.send({"hello": "world!"});
 });
 
-// GET request handler
+// Ping route
 app.get("/ping", (req, res) => {
-    res.send({"pong": "2"});
+    res.send({"pong": "1"});
 });
 
 // POST request handler for posting a joke
