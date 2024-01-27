@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 
 // PostgreSQL client setup
 const client = new Client({
-    user: 'dailyjokes_admin',
+    user: 'asgeir',
     host: 'localhost',
     database: 'dailyjokes',
     password: process.env.DB_PASSWORD,
