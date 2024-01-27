@@ -16,6 +16,10 @@ jobs:
       with:
         node-version: 16.x
 
+    - name: Stop App
+      run: pm2 stop app
+      working-directory: /projects/daily-jokes-linux
+
     - name: Pull Latest Code
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: |
@@ -27,11 +31,9 @@ jobs:
       working-directory: /projects/daily-jokes-linux
 
     - name: Run test (jest)
-      env:
-        PORT: 3001
       run: npm test
       working-directory: /projects/daily-jokes-linux
 
-    - name: Restart Application
-      run: pm2 restart app
+    - name: Start App
+      run: pm2 start app
       working-directory: /projects/daily-jokes-linux
