@@ -27,6 +27,8 @@ jobs:
       working-directory: /projects/daily-jokes-linux
 
     - name: Run test (jest)
+      env:
+        PORT: 3001
       run: npm test
       working-directory: /projects/daily-jokes-linux
 
