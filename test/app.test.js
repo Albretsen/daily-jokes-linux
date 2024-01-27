@@ -12,10 +12,11 @@ describe('GET /ping', () => {
 
     afterAll(async () => {
         try {
-            // First, close the PostgreSQL client connection
+            // Waiting to make sure DB operations finish before closing connection
+            await new Promise(resolve => setTimeout(resolve, 3000));
+
             await client.end();
 
-            // Then, close the server
             await new Promise((resolve, reject) => {
                 server.close((err) => {
                     if (err) {
