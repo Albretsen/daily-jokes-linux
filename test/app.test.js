@@ -17,9 +17,10 @@ describe('GET /ping', () => {
                     reject(err);
                     return;
                 }
-                client.end(() => { 
+                resolve();
+                /*client.end(() => { 
                     resolve();
-                });
+                });*/
             });
         });
     });
