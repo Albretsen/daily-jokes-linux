@@ -23,11 +23,7 @@ const client = new Client({
     port: 5432,
 });
 
-// Connect to the database
 client.connect();
-
-// Close DB
-client.end();
 
 // GET request handler
 app.get("/", (req, res) => {
@@ -55,4 +51,4 @@ app.post("/joke", async (req, res) => {
 // Start the server
 const server = app.listen(port, () => console.log(`Listening on ${port}`));
 
-module.exports = { app, server };
+module.exports = { app, server, client };

@@ -1,5 +1,5 @@
 const supertest = require('supertest');
-const { app, server } = require('../app');
+const { app, server, client } = require('../app');
 
 const request = supertest(app);
 
@@ -10,7 +10,6 @@ describe('GET /ping', () => {
         expect(response.body).toEqual({ "pong": "2" });
     });
 
-    // Close server and database connection after all tests
     afterAll(async () => {
         await new Promise((resolve, reject) => {
             server.close((err) => {
@@ -18,7 +17,9 @@ describe('GET /ping', () => {
                     reject(err);
                     return;
                 }
-                resolve();
+                client.end(() => { 
+                    resolve();
+                });
             });
         });
     });
