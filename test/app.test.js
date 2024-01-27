@@ -11,18 +11,23 @@ describe('GET /ping', () => {
     });
 
     afterAll(async () => {
-        await new Promise((resolve, reject) => {
-            server.close((err) => {
-                if (err) {
-                    reject(err);
-                    return;
-                }
-                resolve();
-                /*client.end(() => { 
+        try {
+            // First, close the PostgreSQL client connection
+            await client.end();
+
+            // Then, close the server
+            await new Promise((resolve, reject) => {
+                server.close((err) => {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
                     resolve();
-                });*/
+                });
             });
-        });
+        } catch (error) {
+            console.error('Error during shutdown:', error);
+        }
     });
 
 });
