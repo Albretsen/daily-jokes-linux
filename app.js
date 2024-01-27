@@ -15,10 +15,10 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // PostgreSQL client setup
-/*const client = new Client({
-    user: 'postgres',
+const client = new Client({
+    user: 'dailyjokes_admin',
     host: 'localhost',
-    database: 'jokes',
+    database: 'dailyjokes',
     password: process.env.DB_PASSWORD,
     port: 5432,
 });
@@ -27,7 +27,7 @@ app.use(bodyParser.json());
 client.connect();
 
 // Close DB
-client.end();*/
+client.end();
 
 // GET request handler
 app.get("/", (req, res) => {
