@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "NodeJS app for Daily Jokes server",
   "main": "app.js",
+  "type": "module",
   "scripts": {
     "start": "node server.js",
     "devstart": "nodemon -w src -w .env -w server.js server | pino-pretty -clt -i 'hostname,pid'",
