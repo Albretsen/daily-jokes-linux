@@ -1,0 +1,39 @@
+// Prisma schema file
+// See https://www.prisma.io/docs/concepts/components/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  email String @db.VarChar(255) @unique
+  password String @db.VarChar(255)
+  token String @db.VarChar(255) @unique
+  name String @db.VarChar(255)
+  createdAt DateTime @default(now())
+  lastLoginAt DateTime @default(now())
+  isActive Boolean @default(true)
+
+  @@index([email])
+  @@index([token])
+}
+
+model Contest {
+  id Int @id @default(autoincrement())
+  date DateTime @unique
+  topic String?
+}
+
+model Joke {
+  id Int @id @default(autoincrement())
+  userId Int
+  textBody String
+  createTimeStamp DateTime
+  score Float
+}

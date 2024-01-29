@@ -4,7 +4,14 @@
   "description": "NodeJS app for Daily Jokes server",
   "main": "app.js",
   "scripts": {
-    "test": "jest"
+    "start": "node server.js",
+    "devstart": "nodemon -w src -w .env -w server.js server | pino-pretty -clt -i 'hostname,pid'",
+    "lint": "eslint .",
+    "prettier": "prettier -w .",
+    "test": "jest --roots test --verbose",
+    "coverage": "jest --roots test --verbose --coverage",
+    "watch-test": "jest --roots test --verbose --watch",
+    "shell": "node --experimental-repl-await scripts/shell.js"
   },
   "repository": {
     "type": "git",
@@ -17,13 +24,31 @@
   },
   "homepage": "https://github.com/Albretsen/daily-jokes-linux#readme",
   "dependencies": {
+    "@prisma/client": "^3.15.2",
+    "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "pg": "^8.11.3"
+    "jsonschema": "^1.4.1",
+    "nodemailer": "^6.7.7",
+    "pg": "^8.11.3",
+    "pino": "^8.3.0",
+    "swagger-jsdoc": "^6.2.1",
+    "swagger-ui-express": "^4.5.0",
+    "validator": "^13.7.0"
   },
   "devDependencies": {
+    "babel": "^6.23.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-jest": "^27.0.1",
+    "eslint": "^8.20.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
     "jest": "^29.7.0",
+    "nodemon": "^2.0.19",
+    "pino-pretty": "^8.1.0",
+    "prettier": "^2.7.1",
+    "prisma": "^3.15.2",
     "supertest": "^6.3.4"
   }
 }
