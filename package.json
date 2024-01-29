@@ -38,6 +38,7 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.23.9",
     "babel": "^6.23.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-jest": "^27.0.1",
