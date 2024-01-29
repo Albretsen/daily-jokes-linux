@@ -27,7 +27,7 @@ client.connect();
 
 // Default route
 app.get("/", (req, res) => {
-    res.send({"hello": "world!"});
+    res.send({"This page is inteded for API use.": "dailyjokes.app"});
 });
 
 // Ping route
