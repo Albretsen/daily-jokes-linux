@@ -1,13 +1,13 @@
 import { Router } from "express";
 
 import JokeService from "../../services/joke.js";
-import { requireUser } from "../middlewares/auth.js";
+//import { requireUser } from "../middlewares/auth.js";
 import { requireSchema, requireValidId } from "../middlewares/validate.js";
 import schema from "../schemas/joke.js";
 
 const router = Router();
 
-router.use(requireUser);
+//router.use(requireUser);
 
 /** @swagger
  *

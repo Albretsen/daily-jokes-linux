@@ -13,12 +13,6 @@ UserService.authenticateWithToken = jest
   .mockResolvedValue({ email: "test@example.com" });
 
 describe("/api/v1/joke/", () => {
-  test("anonymous requests are blocked", async () => {
-    const req = supertest(app);
-    const res = await req.get("/api/v1/joke");
-    expect(res.status).toBe(401);
-  });
-
   test("GET lists all the models", async () => {
     const data = [{ name: "First" }, { name: "Second" }];
     JokeService.list = jest.fn().mockResolvedValue(data);
@@ -82,12 +76,6 @@ describe("/api/v1/joke/:id", () => {
     expect(res.body).toEqual(data);
     expect(res.status).toBe(200);
     expect(JokeService.get).toHaveBeenCalledWith(1);
-  });
-
-  test("getting a single result fails for anonymous user", async () => {
-    const req = supertest(app);
-    const res = await req.get("/api/v1/joke/1");
-    expect(res.status).toBe(401);
   });
 
   test("request for nonexistent object returns 404", async () => {
