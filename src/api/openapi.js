@@ -29,14 +29,6 @@ export const definition = {
       changePasswordSchema,
       User: userSchema,
     },
-    securitySchemes: {
-      BearerAuth: {
-        type: "http",
-        description: "Simple bearer token",
-        scheme: "bearer",
-        bearerFormat: "simple",
-      },
-    },
   },
 };
 
