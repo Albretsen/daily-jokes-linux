@@ -68,7 +68,7 @@ class UserService {
 
       if (!passwordValid) return null;
 
-      user.lastLoginAt = Date.now();
+      user.lastLoginAt = new Date();
       const updatedUser = await User.update({
         where: { id: user.id },
         data: { lastLoginAt: user.lastLoginAt },
