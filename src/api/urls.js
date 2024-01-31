@@ -14,4 +14,7 @@ export default {
   joke: {
     path: "/joke",
   },
+  ping: {
+    path: "/ping",
+  }
 };

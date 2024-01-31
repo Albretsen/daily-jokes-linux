@@ -5,6 +5,7 @@ import { authenticateWithToken } from "../middlewares/auth.js";
 import { handle404, handleError } from "../middlewares/errors.js";
 import authRouter from "./auth.js";
 import jokeRouter from "./joke.js";
+import pingRouter from "./ping.js"
 import urls from "../urls.js";
 import spec from "../openapi.js";
 
@@ -23,6 +24,9 @@ router.use(
   swaggerUI.serve,
   swaggerUI.setup(null, swaggerUIOptions)
 );
+
+// CRUD API
+router.use(urls.apiPrefix + urls.ping.path, pingRouter);
 
 // Authentication
 router.use(authenticateWithToken);
