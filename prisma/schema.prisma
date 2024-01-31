@@ -37,3 +37,10 @@ model Joke {
   createTimeStamp DateTime
   score Float
 }
+
+model JokeDataset {
+  id Int @id @default(autoincrement())
+  body String
+  category String
+  title String
+}
