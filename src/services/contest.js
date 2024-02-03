@@ -18,6 +18,24 @@ class ContestService {
     }
   }
 
+  static async findByCriteria(criteria) {
+    try {
+      let whereClause = {};
+      if (criteria.date) {
+        whereClause.date = criteria.date;
+      }
+      if (criteria.text) {
+        whereClause.text = criteria.text;
+      }
+
+      return await Contest.findMany({
+        where: whereClause,
+      });
+    } catch (err) {
+      throw new DatabaseError(err);
+    }
+  }
+
   static async create(data) {
     try {
       return await Contest.create({ data });
