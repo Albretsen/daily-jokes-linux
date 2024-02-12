@@ -16,5 +16,8 @@ export default {
   },
   ping: {
     path: "/ping",
+  },
+  contest: {
+    path: "/contest",
   }
 };

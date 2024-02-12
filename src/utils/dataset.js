@@ -17,20 +17,17 @@ export const readJsonFile = (filePath, callback) => {
 };
 
 export const JSONFileToTable = () => {
-    console.log("Converting JSON to table...");
     readJsonFile("./dataset/wocka.json", async (result) => {
         let i = 0;
         while (typeof result[i] == 'object') {
 
             try {
 
-                console.log("Posting joke: " + result[i].id);
                 await JokeDatasetService.create({
                     body: result[i].body,
                     category: result[i].category,
                     title: result[i].title
                 });
-                console.log("Finished posting joke: " + result[i].id);
 
             } catch (err) {
                 console.log("Error posting joke: " + result[i].id + " | " + err);

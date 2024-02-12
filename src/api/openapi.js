@@ -13,7 +13,7 @@ export const definition = {
   info: {
     title: "Daily Jokes",
     version: "0.0.1",
-    description: "A REST+JSON API service",
+    description: "API for the Daily Jokes app",
   },
   servers: [
     {

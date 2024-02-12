@@ -6,6 +6,7 @@ import { handle404, handleError } from "../middlewares/errors.js";
 import authRouter from "./auth.js";
 import jokeRouter from "./joke.js";
 import pingRouter from "./ping.js"
+import contestRouter from "./contest.js";
 import urls from "../urls.js";
 import spec from "../openapi.js";
 
@@ -25,7 +26,10 @@ router.use(
   swaggerUI.setup(null, swaggerUIOptions)
 );
 
-// CRUD API
+// Ping API
+router.use(urls.apiPrefix + urls.contest.path, contestRouter);
+
+// Contest API
 router.use(urls.apiPrefix + urls.ping.path, pingRouter);
 
 // Authentication
