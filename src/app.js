@@ -3,6 +3,10 @@ import express from "express";
 
 import routes from "./api/routes/index.js";
 
+import { VerifyFutureContests } from "./utils/contest.js";
+
+VerifyFutureContests();
+
 const app = express();
 
 app.enable("json spaces");
