@@ -1,7 +1,7 @@
 import contest from "../services/contest.js";
 import { topics } from "../../assets/topics.js";
 
-const DAYS_AHEAD = 3;
+const DAYS_AHEAD = 10;
 
 export const CheckContestOnDate = async (date) => {
     const result = await contest.findByCriteria({ date: new Date(date) });

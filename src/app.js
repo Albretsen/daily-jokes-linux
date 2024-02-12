@@ -3,9 +3,9 @@ import express from "express";
 
 import routes from "./api/routes/index.js";
 
-import { VerifyFutureContests } from "./utils/contest.js";
+import { schedule } from "./scheduled_tasks/task_controller.js";
 
-VerifyFutureContests();
+schedule();
 
 const app = express();
 
