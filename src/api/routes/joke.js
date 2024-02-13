@@ -68,6 +68,9 @@ router.get("", async (req, res, next) => {
  */
 router.post("", requireSchema(schema), async (req, res, next) => {
   try {
+    // TODO: move field assignements to it's own function
+    req.validatedBody.createTimeStamp = new Date();
+    req.validatedBody.score = 0;
     const obj = await JokeService.create(req.validatedBody);
     res.status(201).json(obj);
   } catch (error) {

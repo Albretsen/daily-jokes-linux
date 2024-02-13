@@ -6,6 +6,6 @@ export default {
     createTimeStamp: { type: "string", format: "date-time" },
     score: { type: "number" },
   },
-  required: ["userId", "textBody", "createTimeStamp", "score"],
+  required: ["userId", "textBody"],
   additionalProperties: false,
 };
