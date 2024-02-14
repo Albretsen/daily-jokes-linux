@@ -1,5 +1,6 @@
 import { Contest } from "../models/init.js";
 import DatabaseError from "../models/error.js";
+import { formatDate } from "../utils/date.js";
 
 class ContestService {
   static async list() {
@@ -22,7 +23,7 @@ class ContestService {
     try {
       let whereClause = {};
       if (criteria.date) {
-        whereClause.date = criteria.date;
+        whereClause.date = new Date(formatDate(criteria.date));
       }
       if (criteria.text) {
         whereClause.text = criteria.text;

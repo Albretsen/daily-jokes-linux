@@ -4,21 +4,37 @@ import app from "./src/app.js";
 import config from "./src/utils/config.js";
 import logger from "./src/utils/log.js";
 
+import { schedule, unschedule } from "./src/scheduled_tasks/task_controller.js";
+
+schedule();
+
 const log = logger("server");
 const server = http.createServer(app);
 
-process.on("uncaughtException", (err) => {
-  log.fatal({ err }, `Unhandled exception ${err}`);
-  server.close();
-});
+const gracefulShutdown = (signal) => {
+  return (error) => {
+    if (error) log.fatal({ err: error }, `Exiting due to unhandled exception or rejection: ${error}`);
+    log.info(`Received ${signal}, shutting down gracefully.`);
 
-process.on("unhandledRejection", (reason) => {
-  log.error(`Unhandled promise rejection: ${reason}`);
-});
+    unschedule(); 
+
+    server.close(() => {
+      log.info('HTTP server closed.');
+      process.exit(error ? 1 : 0);
+    });
+  };
+};
+
+process.on('uncaughtException', gracefulShutdown('uncaughtException'));
+
+process.on('unhandledRejection', gracefulShutdown('unhandledRejection'));
+
+process.on('SIGTERM', gracefulShutdown('SIGTERM'));
+process.on('SIGINT', gracefulShutdown('SIGINT'));
 
 const main = async () => {
   log.info(`Listening on 0.0.0.0:${config.PORT}`);
   await server.listen(config.PORT);
 };
 
-main();
+main().catch(gracefulShutdown('startupError'));

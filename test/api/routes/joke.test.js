@@ -29,8 +29,12 @@ describe("/api/v1/joke/", () => {
     const data = {
       userId: 42,
       textBody: "test",
-      createTimeStamp: "2001-01-01T00:00:00Z",
-      score: 3.141592,
+    };
+
+    const expectedData = {
+      ...data,
+      createTimeStamp: expect.any(Date),
+      score: 0,
     };
 
     JokeService.create = jest.fn().mockResolvedValue(data);
@@ -43,7 +47,7 @@ describe("/api/v1/joke/", () => {
 
     expect(res.body).toEqual(data);
     expect(res.status).toBe(201);
-    expect(JokeService.create).toHaveBeenCalledWith(data);
+    expect(JokeService.create).toHaveBeenCalledWith(expectedData);
   });
 
   test("creating a new Joke without required attributes fails", async () => {
@@ -107,8 +111,6 @@ describe("/api/v1/joke/:id", () => {
     const data = {
       userId: 42,
       textBody: "test",
-      createTimeStamp: "2001-01-01T00:00:00Z",
-      score: 3.141592,
     };
     JokeService.update = jest.fn().mockResolvedValue(data);
     const req = supertest(app);
