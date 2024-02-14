@@ -98,6 +98,34 @@ router.post(
   }
 );
 
+/** @swagger
+ *
+ * /auth/loginWithToken:
+ *   post:
+ *     tags: [Authentication]
+ *     summary: Authenticates with token
+ *     responses:
+ *       204:
+ *         description: Successful login, token validated
+ */
+router.post(urls.auth.loginWithToken, async (req, res) => {
+  const authHeader = req.get("Authorization");
+  if (authHeader) {
+    const m = authHeader.match(/^(Token|Bearer) (.+)/i);
+    if (m) {
+      UserService.authenticateWithToken(m[2])
+        .then((user) => {
+          res.json(user);
+        })
+        .catch((err) => {
+          res.status(401).json({ error: "Authentication failed: " + err });
+        });
+      return;
+    }
+  }
+  res.status(401).json({ error: "Authentication failed" });
+});
+
 // all auth routes after this can rely on existence of req.user
 router.use(requireUser);
 

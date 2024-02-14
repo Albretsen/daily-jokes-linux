@@ -7,6 +7,7 @@ export default {
   auth: {
     path: "/auth",
     login: "/login",
+    loginWithToken: "/loginWithToken",
     logout: "/logout",
     changePassword: "/password",
     register: "/register",
