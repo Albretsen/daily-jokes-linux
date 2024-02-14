@@ -115,7 +115,6 @@ router.post(urls.auth.loginWithToken, async (req, res) => {
     if (m) {
       UserService.authenticateWithToken(m[2])
         .then((user) => {
-          console.log(JSON.stringify(user));
           res.json({ user });
         })
         .catch((err) => {

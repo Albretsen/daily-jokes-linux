@@ -15,6 +15,7 @@ model User {
   email String @db.VarChar(255) @unique
   password String @db.VarChar(255)
   token String @db.VarChar(255) @unique
+  deviceID String @db.VarChar(255) @default("")
   name String @db.VarChar(255)
   createdAt DateTime @default(now())
   lastLoginAt DateTime @default(now())
