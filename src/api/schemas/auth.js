@@ -15,6 +15,7 @@ export const registerSchema = {
     name: { type: "string" },
     email: { type: "string", format: "email" },
     password: { type: "string" },
+    deviceID: { type: "string" },
   },
   required: ["email", "password"],
 };
