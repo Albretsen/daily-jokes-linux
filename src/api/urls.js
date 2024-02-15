@@ -11,6 +11,7 @@ export default {
     logout: "/logout",
     changePassword: "/password",
     register: "/register",
+    update: "/update",
   },
   joke: {
     path: "/joke",

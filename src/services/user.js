@@ -37,9 +37,7 @@ class UserService {
       return User.update(
         {
           where: { id },
-        },
-        {
-          data,
+          data: data,
         }
       );
     } catch (err) {

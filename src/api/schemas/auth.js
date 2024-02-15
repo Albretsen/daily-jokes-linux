@@ -20,6 +20,15 @@ export const registerSchema = {
   required: ["email", "password"],
 };
 
+export const updateSchema = {
+  type: "object",
+  properties: {
+    name: { type: "string" },
+    email: { type: "string", format: "email" },
+    deviceID: { type: "string" },
+  },
+};
+
 export const changePasswordSchema = {
   type: "object",
   properties: {

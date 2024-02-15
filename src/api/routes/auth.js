@@ -2,10 +2,11 @@ import { Router } from "express";
 
 import UserService from "../../services/user.js";
 import urls from "../urls.js";
-import { requireUser } from "../middlewares/auth.js";
+import { requireUser, authenticateWithToken } from "../middlewares/auth.js";
 import { requireSchema } from "../middlewares/validate.js";
 import {
   registerSchema,
+  updateSchema,
   changePasswordSchema,
   loginSchema,
 } from "../schemas/auth.js";
@@ -108,22 +109,8 @@ router.post(
  *       204:
  *         description: Successful login, token validated
  */
-router.post(urls.auth.loginWithToken, async (req, res) => {
-  const authHeader = req.get("Authorization");
-  if (authHeader) {
-    const m = authHeader.match(/^(Token|Bearer) (.+)/i);
-    if (m) {
-      UserService.authenticateWithToken(m[2])
-        .then((user) => {
-          res.json({ user });
-        })
-        .catch((err) => {
-          res.status(401).json({ error: "Authentication failed: " + err });
-        });
-      return;
-    }
-  }
-  res.status(401).json({ error: "Authentication failed" });
+router.post(urls.auth.loginWithToken, authenticateWithToken, async (req, res) => {
+  res.json({ user: req.user });
 });
 
 // all auth routes after this can rely on existence of req.user
@@ -141,6 +128,21 @@ router.use(requireUser);
  */
 router.post(urls.auth.logout, async (req, res) => {
   await UserService.regenerateToken(req.user);
+  res.status(204).send();
+});
+
+/** @swagger
+ *
+ * /auth/update:
+ *   post:
+ *     tags: [Authentication]
+ *     summary: Update user data
+ *     responses:
+ *       200:
+ *         description: Successfully updated all columns
+ */
+router.post(urls.auth.update, [authenticateWithToken, requireSchema(updateSchema)], async (req, res) => {
+  await UserService.update(req.user.id, req.body);
   res.status(204).send();
 });
 
