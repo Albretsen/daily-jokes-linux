@@ -1,13 +1,14 @@
 import { Router } from "express";
 
 import JokeService from "../../services/joke.js";
-//import { requireUser } from "../middlewares/auth.js";
+import { requireUser } from "../middlewares/auth.js";
 import { requireSchema, requireValidId } from "../middlewares/validate.js";
 import schema from "../schemas/joke.js";
+import { GenerateJokeJSON } from "../../utils/joke.js";
 
 const router = Router();
 
-//router.use(requireUser);
+router.use(requireUser);
 
 /** @swagger
  *
@@ -68,10 +69,7 @@ router.get("", async (req, res, next) => {
  */
 router.post("", requireSchema(schema), async (req, res, next) => {
   try {
-    // TODO: move field assignements to it's own function
-    req.validatedBody.createTimeStamp = new Date();
-    req.validatedBody.score = 0;
-    const obj = await JokeService.create(req.validatedBody);
+    const obj = await JokeService.create(await GenerateJokeJSON(req.user.id, req.validatedBody.textBody));
     res.status(201).json(obj);
   } catch (error) {
     if (error.isClientError()) {

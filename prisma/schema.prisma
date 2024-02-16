@@ -15,11 +15,13 @@ model User {
   email String @db.VarChar(255) @unique
   password String @db.VarChar(255)
   token String @db.VarChar(255) @unique
-  deviceID String @db.VarChar(255) @default("")
+  deviceID String? @db.VarChar(255) @default("")
   name String @db.VarChar(255)
   createdAt DateTime @default(now())
   lastLoginAt DateTime @default(now())
   isActive Boolean @default(true)
+  profile String? @db.VarChar(255)
+  jokes Joke[]
 
   @@index([email])
   @@index([token])
@@ -28,7 +30,8 @@ model User {
 model Contest {
   id Int @id @default(autoincrement())
   date DateTime @unique
-  topic String?
+  topic String
+  jokes Joke[]
 }
 
 model Joke {
@@ -37,6 +40,12 @@ model Joke {
   textBody String
   createTimeStamp DateTime
   score Float
+  contestId Int
+  user User @relation(fields: [userId], references: [id])
+  contest Contest @relation(fields: [contestId], references: [id])
+
+  @@index([userId])
+  @@index([contestId])
 }
 
 model JokeDataset {
