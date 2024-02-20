@@ -24,5 +24,8 @@ export default {
   },
   coin: {
     path: "/coin",
+  },
+  jokeSubmission: {
+    path: "/jokeSubmission",
   }
 };

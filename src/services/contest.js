@@ -2,7 +2,16 @@ import { Contest } from "../models/init.js";
 import DatabaseError from "../models/error.js";
 import { formatDate } from "../utils/date.js";
 
+import { getCurrentContestDate } from "../utils/date.js";
+
 class ContestService {
+  static async getCurrentContest() {
+    const contestDate = getCurrentContestDate();
+    const contest = await ContestService.findByCriteria({ date: contestDate });
+    if (!contest || contest.length === 0) throw new Error("Contest not found");
+    return contest[0];
+  }
+
   static async list() {
     try {
       return Contest.findMany();

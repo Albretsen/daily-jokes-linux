@@ -1,12 +1,10 @@
 import { JokeSubmission } from "../models/init.js";
 import DatabaseError from "../models/error.js";
 import ContestService from "./contest.js";
-import { getCurrentContestDate } from "../utils/date.js";
-
 class JokeSubmissionService {
     static async submitJoke(userId) {
         try {
-            const contestDetails = await this.getCurrentContest();
+            const contestDetails = await ContestService.getCurrentContest();
             const submissionDetails = await this.getOrCreateSubmission(userId, contestDetails.id);
             const updateResult = await this.updateSubmissionIfAllowed(submissionDetails);
 
@@ -18,13 +16,6 @@ class JokeSubmissionService {
         } catch (err) {
             throw new DatabaseError(err.message);
         }
-    }
-
-    static async getCurrentContest() {
-        const contestDate = getCurrentContestDate();
-        const contest = await ContestService.findByCriteria({ date: contestDate });
-        if (!contest || contest.length === 0) throw new Error("Contest not found");
-        return contest[0];
     }
 
     static async getOrCreateSubmission(userId, contestId) {
