@@ -70,16 +70,23 @@ router.get("", async (req, res, next) => {
  */
 router.post("", requireSchema(schema), async (req, res, next) => {
   try {
-    if (!(await JokeSubmissionService.verify(req.user.id))) {
-      res.status(400).json({ "error": "No slots available" });
+    const submissionStatus = await JokeSubmissionService.submitJoke(req.user.id);
+
+    if (!submissionStatus.canSubmit) {
+      res.status(400).json({ error: "No submissions available", remainingSubmissions: submissionStatus.remainingSubmissions });
     } else {
-      const obj = await JokeService.create(await GenerateJokeJSON(req.user.id, req.validatedBody.textBody));
-      await JokeSubmissionService.incrementJokesSubmitted(req.user.id);
-      res.status(201).json(obj);
+      const jokeData = await GenerateJokeJSON(req.user.id, req.validatedBody.textBody);
+      const obj = await JokeService.create(jokeData);
+
+      res.status(201).json({
+        joke: obj,
+        message: submissionStatus.message,
+        remainingSubmissions: submissionStatus.remainingSubmissions
+      });
     }
   } catch (error) {
-    if (error.isClientError()) {
-      res.status(400).json({ error });
+    if (error.isClientError && error.isClientError()) {
+      res.status(400).json({ error: error.message });
     } else {
       next(error);
     }

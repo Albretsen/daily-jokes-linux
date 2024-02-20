@@ -4,40 +4,59 @@ import ContestService from "./contest.js";
 import { getCurrentContestDate } from "../utils/date.js";
 
 class JokeSubmissionService {
-    static async verify(userId) {
-        let jokeSubmission = await JokeSubmissionService.getOrCreateForCurrentContest(userId);
-
-        return jokeSubmission.jokesSubmitted - (3 + jokeSubmission.additionalSlotsPurchased) < 0;
-    }
-
-    static async getOrCreateForCurrentContest(userId) {
-        let contest = await ContestService.findByCriteria({ date: getCurrentContestDate() });
-        let jokeSubmission = await JokeSubmissionService.get(userId, contest[0].id);
-
-        if (!jokeSubmission) {
-            let result = await JokeSubmissionService.create({
-                userId: userId,
-                contestId: contest[0].id,
-            });
-            return result;
-        }
-
-        return jokeSubmission;
-    }
-    
-    static async incrementJokesSubmitted(userId) {
-        let contest = await ContestService.findByCriteria({ date: getCurrentContestDate() });
-        let jokeSubmission = await JokeSubmissionService.get(userId, contest[0].id);
-
-        await JokeSubmissionService.update(jokeSubmission.id, { jokesSubmitted: jokeSubmission.jokesSubmitted + 1 });
-    }
-
-    static async list() {
+    static async submitJoke(userId) {
         try {
-            return JokeSubmission.findMany();
+            const contestDetails = await this.getCurrentContest();
+            const submissionDetails = await this.getOrCreateSubmission(userId, contestDetails.id);
+            const updateResult = await this.updateSubmissionIfAllowed(submissionDetails);
+
+            return {
+                canSubmit: updateResult.canSubmit,
+                message: updateResult.message,
+                remainingSubmissions: updateResult.remainingSubmissions
+            };
         } catch (err) {
-            throw new DatabaseError(err);
+            throw new DatabaseError(err.message);
         }
+    }
+
+    static async getCurrentContest() {
+        const contestDate = getCurrentContestDate();
+        const contest = await ContestService.findByCriteria({ date: contestDate });
+        if (!contest || contest.length === 0) throw new Error("Contest not found");
+        return contest[0];
+    }
+
+    static async getOrCreateSubmission(userId, contestId) {
+        let submission = await this.get(userId, contestId);
+        if (!submission) {
+            submission = await this.create({
+                userId,
+                contestId,
+            });
+        }
+
+        return submission;
+    }
+
+    static async updateSubmissionIfAllowed(submission) {
+        const maxSubmissions = 3 + submission.additionalSlotsPurchased;
+        const remainingSubmissions = maxSubmissions - submission.jokesSubmitted;
+
+        if (remainingSubmissions <= 0) {
+            return {
+                canSubmit: false,
+                message: "Submission limit reached.",
+                remainingSubmissions: 0,
+            };
+        }
+
+        await this.update(submission.id, { jokesSubmitted: submission.jokesSubmitted + 1 });
+
+        return {
+            canSubmit: true,
+            remainingSubmissions: remainingSubmissions - 1,
+        };
     }
 
     static async get(userId, contestId) {
