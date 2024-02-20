@@ -3,6 +3,7 @@ import { randomBytes } from "crypto";
 import { User } from "../models/init.js";
 import DatabaseError from "../models/error.js";
 import { generatePasswordHash, validatePassword } from "../utils/password.js";
+import Coin from "./coin.js";
 
 const generateRandomToken = () =>
   randomBytes(48).toString("base64").replace(/[+/]/g, ".");
@@ -104,6 +105,10 @@ class UserService {
       };
 
       const user = await User.create({ data });
+
+      await Coin.create({
+        userId: user.id,
+      });
 
       delete user.password;
       return user;

@@ -8,3 +8,4 @@ export const User = prisma.user;
 export const Contest = prisma.contest;
 export const Joke = prisma.joke;
 export const JokeDataset = prisma.jokeDataset;
+export const Coin = prisma.Coin;
