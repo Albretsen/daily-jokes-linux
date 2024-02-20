@@ -34,4 +34,31 @@ router.get("", async (req, res, next) => {
     }
 });
 
+/**
+ * @swagger
+ * /jokeSubmission/purchase:
+ *   post:
+ *     summary: Returns the active jokeSubmission
+ *     description: Desc.
+ *     responses:
+ *       200:
+ *         description: Successful response.
+ */
+
+router.post("/purchase", async (req, res, next) => {
+    try {
+        const results = await JokeSubmissionService.purchaseAdditionalSlot(req.user.id);
+        res.json(results);
+    } catch (error) {
+        console.log(error);
+        if (error.isClientError()) {
+            res.status(400).json({ error });
+        } else if (error.message == 'Insufficient coin amount') {
+            res.status(400).json({ error });
+        } else {
+            next(error);
+        }
+    }
+});
+
 export default router;

@@ -1,7 +1,26 @@
 import { JokeSubmission } from "../models/init.js";
 import DatabaseError from "../models/error.js";
 import ContestService from "./contest.js";
+import CoinService from "./coin.js";
 class JokeSubmissionService {
+    static async purchaseAdditionalSlot(userId) {
+        try {
+            const contestDetails = await ContestService.getCurrentContest();
+            await CoinService.purchase(userId, 10); 
+
+            const submission = await JokeSubmissionService.get(userId, contestDetails.id);
+            if (!submission) {
+                throw new Error('Submission not found');
+            }
+
+            const updatedSubmission = await JokeSubmissionService.update(submission.id, { additionalSlotsPurchased: submission.additionalSlotsPurchased + 1 });
+
+            return updatedSubmission;
+        } catch (err) {
+            return { error: err.message };
+        }
+    }
+
     static async submitJoke(userId) {
         try {
             const contestDetails = await ContestService.getCurrentContest();

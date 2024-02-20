@@ -8,14 +8,13 @@ class CoinService {
             if (!coin) {
                 throw new Error('Coin not found');
             }
-
-            if (coin.amount < amountToDecrement) {
+            if (coin.coins < amountToDecrement) {
                 throw new Error('Insufficient coin amount');
             }
 
-            const newAmount = coin.amount - amountToDecrement;
+            const newAmount = coin.coins - amountToDecrement;
 
-            return await CoinService.update(userId, { amount: newAmount });
+            return await CoinService.update(userId, { coins: newAmount });
         } catch (err) {
             throw new DatabaseError(err);
         }
@@ -45,10 +44,10 @@ class CoinService {
         }
     }
 
-    static async update(id, data) {
+    static async update(userId, data) {
         try {
             return await Coin.update({
-                where: { id },
+                where: { userId },
                 data,
             });
         } catch (err) {
