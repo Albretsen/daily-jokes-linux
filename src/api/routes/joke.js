@@ -5,6 +5,7 @@ import { requireUser } from "../middlewares/auth.js";
 import { requireSchema, requireValidId } from "../middlewares/validate.js";
 import schema from "../schemas/joke.js";
 import { GenerateJokeJSON } from "../../utils/joke.js";
+import JokeSubmissionService from "../../services/joke_submission.js";
 
 const router = Router();
 
@@ -69,8 +70,13 @@ router.get("", async (req, res, next) => {
  */
 router.post("", requireSchema(schema), async (req, res, next) => {
   try {
-    const obj = await JokeService.create(await GenerateJokeJSON(req.user.id, req.validatedBody.textBody));
-    res.status(201).json(obj);
+    if (!(await JokeSubmissionService.verify(req.user.id))) {
+      res.status(400).json({ "error": "No slots available" });
+    } else {
+      const obj = await JokeService.create(await GenerateJokeJSON(req.user.id, req.validatedBody.textBody));
+      await JokeSubmissionService.incrementJokesSubmitted(req.user.id);
+      res.status(201).json(obj);
+    }
   } catch (error) {
     if (error.isClientError()) {
       res.status(400).json({ error });

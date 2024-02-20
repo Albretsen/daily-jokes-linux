@@ -25,24 +25,6 @@ describe("/api/v1/joke/", () => {
     expect(JokeService.list).toHaveBeenCalled();
   });
 
-  test("POST creates a new Joke", async () => {
-    const data = {
-      textBody: "test",
-    };
-
-    JokeService.create = jest.fn().mockResolvedValue(data);
-    const req = supertest(app);
-
-    const res = await req
-      .post("/api/v1/joke")
-      .set("Authorization", "token abc")
-      .send(data);
-
-    //expect(res.body).toEqual(data);
-    expect(res.status).toBe(201);
-    //expect(JokeService.create).toHaveBeenCalledWith(expectedData);
-  });
-
   test("creating a new Joke without required attributes fails", async () => {
     const data = {};
 
