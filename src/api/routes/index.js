@@ -7,6 +7,7 @@ import authRouter from "./auth.js";
 import jokeRouter from "./joke.js";
 import pingRouter from "./ping.js"
 import contestRouter from "./contest.js";
+import coinRouter from "./coin.js";
 import urls from "../urls.js";
 import spec from "../openapi.js";
 
@@ -38,6 +39,9 @@ router.use(urls.apiPrefix + urls.auth.path, authRouter);
 
 // CRUD API
 router.use(urls.apiPrefix + urls.joke.path, jokeRouter);
+
+// Coin API
+router.use(urls.apiPrefix + urls.coin.path, coinRouter);
 
 // Redirect browsers from index to API docs
 router.get("/", (req, res, next) => {

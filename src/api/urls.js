@@ -21,5 +21,8 @@ export default {
   },
   contest: {
     path: "/contest",
+  },
+  coin: {
+    path: "/coin",
   }
 };

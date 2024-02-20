@@ -10,9 +10,9 @@ class CoinService {
     }
   }
 
-  static async get(id) {
+  static async get(userId) {
     try {
-      return await Coin.findUnique({ where: { id } });
+      return await Coin.findUnique({ where: { userId } });
     } catch (err) {
       throw new DatabaseError(err);
     }
