@@ -125,7 +125,7 @@ router.post("", requireSchema(schema), async (req, res, next) => {
  *               items:
  *                 $ref: '#/components/schemas/Joke'
  */
-router.get("/search", async (req, res, next) => {
+router.post("/search", async (req, res, next) => {
   try {
     const { userId, contestId, sortBy } = req.body;
     const criteria = {};
