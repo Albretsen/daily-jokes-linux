@@ -1,7 +1,6 @@
 import { Router } from "express";
 import swaggerUI from "swagger-ui-express";
 
-import { authenticateWithToken } from "../middlewares/auth.js";
 import { handle404, handleError } from "../middlewares/errors.js";
 import authRouter from "./auth.js";
 import jokeRouter from "./joke.js";
@@ -31,12 +30,11 @@ router.use(
 // Ping API
 router.use(urls.apiPrefix + urls.contest.path, contestRouter);
 
+// Authentication
+router.use(urls.apiPrefix + urls.auth.path, authRouter);
+
 // Contest API
 router.use(urls.apiPrefix + urls.ping.path, pingRouter);
-
-// Authentication
-router.use(authenticateWithToken);
-router.use(urls.apiPrefix + urls.auth.path, authRouter);
 
 // CRUD API
 router.use(urls.apiPrefix + urls.joke.path, jokeRouter);
