@@ -81,7 +81,6 @@ router.post(
   urls.auth.register,
   requireSchema(registerSchema),
   async (req, res, next) => {
-    console.log(req);
     if (req.user) {
       res.json({ user: req.user });
       return;

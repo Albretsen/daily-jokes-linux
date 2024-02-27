@@ -46,7 +46,6 @@ router.post("/purchase", async (req, res, next) => {
         const results = await JokeSubmissionService.purchaseAdditionalSlot(req.user.id);
         res.json(results);
     } catch (error) {
-        console.log(error);
         if (error.isClientError()) {
             res.status(400).json({ error });
         } else if (error.message == 'Insufficient coin amount') {
