@@ -64,8 +64,13 @@ class JokeService {
         where: whereClause,
         orderBy: orderByClause,
         include: {
-          user: true, 
-        }
+          user: {
+            select: {
+              profile: true,
+              name: true,
+            }
+          },
+        },
       });
     } catch (err) {
       throw new DatabaseError(err);
