@@ -45,6 +45,29 @@ class JokeService {
       throw new DatabaseError(err);
     }
   }
+
+  static async findByCriteria({ userId, contestId, sortBy }) {
+    try {
+      const whereClause = {};
+
+      if (userId) whereClause.userId = userId;
+
+      if (contestId) whereClause.contestId = contestId;
+
+      const orderByClause = [];
+      if (sortBy) {
+        const [field, order] = sortBy.startsWith('-') ? [sortBy.slice(1), 'desc'] : [sortBy, 'asc'];
+        orderByClause.push({ [field]: order });
+      }
+
+      return await Joke.findMany({
+        where: whereClause,
+        orderBy: orderByClause,
+      });
+    } catch (err) {
+      throw new DatabaseError(err);
+    }
+  }
 }
 
 export default JokeService;

@@ -92,6 +92,61 @@ router.post("", requireSchema(schema), async (req, res, next) => {
 
 /** @swagger
  *
+ * /joke/search:
+ *   get:
+ *     tags: [Joke]
+ *     summary: Search Jokes by criteria
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: The ID of the user to filter jokes by
+ *       - in: query
+ *         name: contestId
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: The ID of the contest to filter jokes by
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Field to sort the jokes by (prefix with '-' for descending order)
+ *     responses:
+ *       200:
+ *         description: List of Joke objects that match the criteria
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Joke'
+ */
+router.get("/search", async (req, res, next) => {
+  try {
+    const { userId, contestId, sortBy } = req.body;
+    const criteria = {};
+    
+    if (userId) criteria.userId = userId;
+    if (contestId) criteria.contestId = contestId;
+    if (sortBy) criteria.sortBy = sortBy;
+
+    const results = await JokeService.findByCriteria(criteria);
+    res.json(results);
+  } catch (error) {
+    if (error.isClientError()) {
+      res.status(400).json({ error: error.message });
+    } else {
+      next(error);
+    }
+  }
+});
+
+/** @swagger
+ *
  * /joke/{id}:
  *   get:
  *     tags: [Joke]
