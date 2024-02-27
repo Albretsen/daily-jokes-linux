@@ -63,6 +63,9 @@ class JokeService {
       return await Joke.findMany({
         where: whereClause,
         orderBy: orderByClause,
+        include: {
+          user: true, 
+        }
       });
     } catch (err) {
       throw new DatabaseError(err);
