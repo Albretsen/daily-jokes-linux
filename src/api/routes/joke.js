@@ -1,15 +1,12 @@
 import { Router } from "express";
 
 import JokeService from "../../services/joke.js";
-import { requireUser } from "../middlewares/auth.js";
 import { requireSchema, requireValidId } from "../middlewares/validate.js";
 import schema from "../schemas/joke.js";
 import { GenerateJokeJSON } from "../../utils/joke.js";
 import JokeSubmissionService from "../../services/joke_submission.js";
 
 const router = Router();
-
-router.use(requireUser);
 
 /** @swagger
  *

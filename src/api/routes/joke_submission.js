@@ -3,11 +3,7 @@ import { Router } from "express";
 import JokeSubmissionService from "../../services/joke_submission.js";
 import ContestService from "../../services/contest.js";
 
-import { requireUser } from "../middlewares/auth.js";
-
 const router = Router();
-
-router.use(requireUser);
 
 /**
  * @swagger

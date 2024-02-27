@@ -1,11 +1,8 @@
 import { Router } from "express";
 
 import CoinService from "../../services/coin.js";
-import { requireUser } from "../middlewares/auth.js";
 
 const router = Router();
-
-router.use(requireUser);
 
 /** @swagger
  *
