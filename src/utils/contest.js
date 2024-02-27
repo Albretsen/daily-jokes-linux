@@ -15,9 +15,11 @@ export const AddNewContestToDB = async (date) => {
     })
 }
 
-export const VerifyFutureContests = async () => {    
+export const VerifyFutureContests = async () => {
     for (let i = 0; i < DAYS_AHEAD; i++) {
-        let formattedDate = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate() + i).padStart(2, '0')}`;
+        let currentDate = new Date();
+        currentDate.setDate(currentDate.getDate() + i);
+        let formattedDate = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
         await CheckContestOnDate(formattedDate);
     }
 }
