@@ -20,7 +20,7 @@ model User {
   createdAt   DateTime @default(now())
   lastLoginAt DateTime @default(now())
   isActive    Boolean  @default(true)
-  profile     String?  @db.VarChar(255)
+  profile     String?  @default("0") @db.VarChar(255)
   jokes       Joke[]
 
   @@index([email])
