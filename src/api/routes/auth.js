@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import UserService from "../../services/user.js";
 import urls from "../urls.js";
-import { requireUser, authenticateWithToken } from "../middlewares/auth.js";
+import { authenticateWithToken } from "../middlewares/auth.js";
 import { requireSchema } from "../middlewares/validate.js";
 import {
   registerSchema,
@@ -114,7 +114,7 @@ router.post(urls.auth.loginWithToken, authenticateWithToken, async (req, res) =>
 });
 
 // all auth routes after this can rely on existence of req.user
-router.use(requireUser);
+//router.use(requireUser);
 
 /** @swagger
  *
