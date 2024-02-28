@@ -40,8 +40,8 @@ router.get("", requireSchema(contestSchema), async (req, res, next) => {
         const results = await Contest.findByCriteria({ date: date });
         res.json(results);
     } catch (error) {
-        if (error.isClientError()) {
-            res.status(400).json({ error });
+        if (error.isClientError && error.isClientError()) {
+            res.status(400).json({ error: error.message });
         } else {
             next(error);
         }

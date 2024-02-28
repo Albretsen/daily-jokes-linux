@@ -22,8 +22,8 @@ router.get("", async (req, res, next) => {
         const results = await JokeSubmissionService.getOrCreateSubmission(req.user.id, contest.id);
         res.json(results);
     } catch (error) {
-        if (error.isClientError()) {
-            res.status(400).json({ error });
+        if (error.isClientError && error.isClientError()) {
+            res.status(400).json({ error: error.message });
         } else {
             next(error);
         }
@@ -46,8 +46,8 @@ router.post("/purchase", async (req, res, next) => {
         const results = await JokeSubmissionService.purchaseAdditionalSlot(req.user.id);
         res.json(results);
     } catch (error) {
-        if (error.isClientError()) {
-            res.status(400).json({ error });
+        if (error.isClientError && error.isClientError()) {
+            res.status(400).json({ error: error.message });
         } else if (error.message == 'Insufficient coin amount') {
             res.status(400).json({ error });
         } else {

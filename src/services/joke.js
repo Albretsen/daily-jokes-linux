@@ -58,10 +58,11 @@ class JokeService {
 export default JokeService;
 
 const MAX_PAGE_SIZE = 10;
-function calculatePagination(pagination) {
+function calculatePagination(pagination = {}) {
   if (!pagination.page) pagination.page = 1;
   if (!pagination.page_size) pagination.page_size = MAX_PAGE_SIZE;
   if (pagination.page_size > MAX_PAGE_SIZE) pagination.page_size = MAX_PAGE_SIZE;
+
   const offset = (pagination.page - 1) * pagination.page_size;
   return { skip: offset, take: pagination.page_size };
 }

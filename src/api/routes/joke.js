@@ -35,8 +35,8 @@ router.get("", async (req, res, next) => {
     const results = await JokeService.list();
     res.json(results);
   } catch (error) {
-    if (error.isClientError()) {
-      res.status(400).json({ error });
+    if (error.isClientError && error.isClientError()) {
+      res.status(400).json({ error: error.message });
     } else {
       next(error);
     }
@@ -132,7 +132,9 @@ router.post("/search", async (req, res, next) => {
     const results = await JokeService.findByCriteria(criteria);
     res.json(results);
   } catch (error) {
-    if (error.isClientError()) {
+    console.log("here");
+    console.log(error);
+    if (error.isClientError && error.isClientError()) {
       res.status(400).json({ error: error.message });
     } else {
       next(error);
@@ -171,8 +173,8 @@ router.get("/:id", requireValidId, async (req, res, next) => {
       res.status(404).json({ error: "Resource not found" });
     }
   } catch (error) {
-    if (error.isClientError()) {
-      res.status(400).json({ error });
+    if (error.isClientError && error.isClientError()) {
+      res.status(400).json({ error: error.message });
     } else {
       next(error);
     }
@@ -220,8 +222,8 @@ router.put(
         res.status(404).json({ error: "Resource not found" });
       }
     } catch (error) {
-      if (error.isClientError()) {
-        res.status(400).json({ error });
+      if (error.isClientError && error.isClientError()) {
+        res.status(400).json({ error: error.message });
       } else {
         next(error);
       }
@@ -256,8 +258,8 @@ router.delete("/:id", requireValidId, async (req, res, next) => {
       res.status(404).json({ error: "Not found, nothing deleted" });
     }
   } catch (error) {
-    if (error.isClientError()) {
-      res.status(400).json({ error });
+    if (error.isClientError && error.isClientError()) {
+      res.status(400).json({ error: error.message });
     } else {
       next(error);
     }

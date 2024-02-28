@@ -26,8 +26,8 @@ router.get("", async (req, res, next) => {
         const results = { pong: 1 }
         res.json(results);
     } catch (error) {
-        if (error.isClientError()) {
-            res.status(400).json({ error });
+        if (error.isClientError && error.isClientError()) {
+            res.status(400).json({ error: error.message });
         } else {
             next(error);
         }

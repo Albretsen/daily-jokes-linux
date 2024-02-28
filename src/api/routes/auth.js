@@ -90,8 +90,8 @@ router.post(
       const user = await UserService.createUser(req.validatedBody);
       res.status(201).json({ user });
     } catch (error) {
-      if (error.isClientError()) {
-        res.status(400).json({ error });
+      if (error.isClientError && error.isClientError()) {
+        res.status(400).json({ error: error.message });
       } else {
         next(error);
       }
