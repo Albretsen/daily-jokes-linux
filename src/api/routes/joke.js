@@ -127,13 +127,8 @@ router.post("", requireSchema(schema), async (req, res, next) => {
  */
 router.post("/search", async (req, res, next) => {
   try {
-    const { userId, contestId, sortBy } = req.body;
-    const criteria = {};
+    const criteria = req.body;
     
-    if (userId) criteria.userId = userId;
-    if (contestId) criteria.contestId = contestId;
-    if (sortBy) criteria.sortBy = sortBy;
-
     const results = await JokeService.findByCriteria(criteria);
     res.json(results);
   } catch (error) {
