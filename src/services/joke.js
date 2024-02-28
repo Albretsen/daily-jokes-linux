@@ -46,15 +46,25 @@ class JokeService {
     }
   }
 
-  static async findByCriteria({ filters, sortBy, exclude }) {
+  static async findByCriteria({ filters, sortBy, exclude, pagination }) {
     const whereClause = buildWhereClause(filters, exclude);
     const orderByClause = buildOrderByClause(sortBy);
-    return await executeQuery(whereClause, orderByClause);
+    const paginationClause = calculatePagination(pagination);
+    return await executeQuery(whereClause, orderByClause, paginationClause);
   }
 
 }
 
 export default JokeService;
+
+const MAX_PAGE_SIZE = 10;
+function calculatePagination(pagination) {
+  if (!pagination.page) pagination.page = 1;
+  if (!pagination.page_size) pagination.page_size = MAX_PAGE_SIZE;
+  if (pagination.page_size > MAX_PAGE_SIZE) pagination.page_size = MAX_PAGE_SIZE;
+  const offset = (pagination.page - 1) * pagination.page_size;
+  return { skip: offset, take: pagination.page_size };
+}
 
 function buildWhereClause(filters, exclude) {
   const whereClause = {};
@@ -87,11 +97,13 @@ function buildOrderByClause(sortBy) {
   return orderByClause;
 }
 
-async function executeQuery(whereClause, orderByClause) {
+async function executeQuery(whereClause, orderByClause, { skip, take }) {
   try {
     return await Joke.findMany({
       where: whereClause,
       orderBy: orderByClause,
+      skip,
+      take,
       include: {
         user: {
           select: {
