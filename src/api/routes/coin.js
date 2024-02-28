@@ -22,11 +22,9 @@ const router = Router();
  */
 router.get("", async (req, res, next) => {
   try {
-    console.log("getting coin");
     const results = await CoinService.get(req.user.id);
     res.json(results);
   } catch (error) {
-    console.log("coin errored");
     res.status(400).json({ error });
   }
 });
