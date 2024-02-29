@@ -13,7 +13,7 @@ export const ExecuteBots = async () => {
     if (jokes.length > 0) {
         TOKENS.forEach(async (token) => {
             const jokesToPost = jokes.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 2) + 2);
-            //jokesToPost.forEach(joke => postJoke(joke, token));
+            jokesToPost.forEach(joke => postJoke(joke, token));
         });
     } else {
         console.log("No jokes found for the contest topic.");
