@@ -144,6 +144,53 @@ router.post("/search", async (req, res, next) => {
 
 /** @swagger
  *
+ * /joke/rate/{id}:
+ *   get:
+ *     tags: [Joke]
+ *     summary: Rate a Joke by id
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Joke object with the specified id
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Joke'
+ */
+const LIKE_VALUE = 1;
+const SUPER_LIKE_VALUE = 3;
+router.post("/rate/:id/:rating", requireValidId, async (req, res, next) => {
+  try {
+    let obj = await JokeService.get(req.params.id);
+    let score = 0;
+
+    if (req.params.rating == "like") score = LIKE_VALUE;
+    if (req.params.rating == "superlike") score = SUPER_LIKE_VALUE;
+
+    if (obj) {
+      obj = await JokeService.update(obj.id, { score: obj.score + score });
+      res.json(obj);
+    } else {
+      res.status(404).json({ error: "Resource not found" });
+    }
+  } catch (error) {
+    if (error.isClientError && error.isClientError()) {
+      res.status(400).json({ error: error.message });
+    } else {
+      next(error);
+    }
+  }
+});
+
+/** @swagger
+ *
  * /joke/{id}:
  *   get:
  *     tags: [Joke]

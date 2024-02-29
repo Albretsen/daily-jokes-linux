@@ -23,10 +23,11 @@ model User {
   profile     String?  @default("0") @db.VarChar(255)
   jokes       Joke[]
 
+  Coin           Coin[]
+  JokeSubmission JokeSubmission[]
   @@index([email])
   @@index([token])
-  Coin        Coin[]
-  JokeSubmission JokeSubmission[]
+  UserJokeLike UserJokeLike[]
 }
 
 model Contest {
@@ -35,6 +36,7 @@ model Contest {
   topic          String
   jokes          Joke[]
   JokeSubmission JokeSubmission[]
+  UserJokeLike   UserJokeLike[]
 }
 
 model Joke {
@@ -49,6 +51,7 @@ model Joke {
 
   @@index([userId])
   @@index([contestId])
+  UserJokeLike UserJokeLike[]
 }
 
 model Coin {
@@ -75,4 +78,19 @@ model JokeDataset {
   body     String
   category String
   title    String
+}
+
+model UserJokeLike {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  jokeId    Int
+  contestId Int
+  value     Int
+  likedAt   DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id])
+  joke    Joke    @relation(fields: [jokeId], references: [id])
+  contest Contest @relation(fields: [contestId], references: [id])
+
+  @@unique([userId, jokeId, contestId], name: "user_joke_contest_unique")
 }
