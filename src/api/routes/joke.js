@@ -5,6 +5,8 @@ import { requireSchema, requireValidId } from "../middlewares/validate.js";
 import schema from "../schemas/joke.js";
 import { GenerateJokeJSON } from "../../utils/joke.js";
 import JokeSubmissionService from "../../services/joke_submission.js";
+import UserJokeLikeService from "../../services/user_joke_like.js";
+import ContestService from "../../services/contest.js";
 
 const router = Router();
 
@@ -144,6 +146,69 @@ router.post("/search", async (req, res, next) => {
 
 /** @swagger
  *
+ * /joke/search:
+ *   get:
+ *     tags: [Joke]
+ *     summary: Search Jokes by criteria for swipe
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: The ID of the user to filter jokes by
+ *       - in: query
+ *         name: contestId
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: The ID of the contest to filter jokes by
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Field to sort the jokes by (prefix with '-' for descending order)
+ *     responses:
+ *       200:
+ *         description: List of Joke objects that match the criteria
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Joke'
+ */
+router.post("/search/swipe", async (req, res, next) => {
+  try {
+    const currentContestId = (await ContestService.getCurrentContest()).id;
+    let likedJokeIds = await UserJokeLikeService.findJokeIdsByContest(currentContestId);
+
+    let criteria = req.body;
+
+    criteria.exclude = criteria.exclude || {};
+
+    if (likedJokeIds.length > 0) {
+        criteria.exclude.id = { notIn: likedJokeIds };
+    }
+
+    criteria.exclude.userId = { not: req.user.id };
+
+    const results = await JokeService.findByCriteria(criteria);
+
+    res.json(results);
+  } catch (error) {
+    console.log("Error in /search/swipe:", error);
+    if (error.isClientError && error.isClientError()) {
+      res.status(400).json({ error: error.message });
+    } else {
+      next(error);
+    }
+  }
+});
+
+/** @swagger
+ *
  * /joke/rate/{id}:
  *   get:
  *     tags: [Joke]
@@ -168,6 +233,11 @@ const LIKE_VALUE = 1;
 const SUPER_LIKE_VALUE = 3;
 router.post("/rate/:id/:rating", requireValidId, async (req, res, next) => {
   try {
+    if (await UserJokeLikeService.verifyJokeNotAlreadyLiked(req.params.id, req.user.id)) {
+      res.status(400).json({ error: "Already liked" });
+      return;
+    }
+
     let obj = await JokeService.get(req.params.id);
     let score = 0;
 
@@ -176,6 +246,12 @@ router.post("/rate/:id/:rating", requireValidId, async (req, res, next) => {
 
     if (obj) {
       obj = await JokeService.update(obj.id, { score: obj.score + score });
+      await UserJokeLikeService.create({
+        userId: req.user.id,
+        jokeId: obj.id,
+        contestId: obj.contestId,
+        value: score,
+      });
       res.json(obj);
     } else {
       res.status(404).json({ error: "Resource not found" });

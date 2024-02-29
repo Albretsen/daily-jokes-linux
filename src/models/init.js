@@ -10,3 +10,4 @@ export const Joke = prisma.joke;
 export const JokeDataset = prisma.jokeDataset;
 export const Coin = prisma.Coin;
 export const JokeSubmission = prisma.JokeSubmission;
+export const UserJokeLike = prisma.UserJokeLike;
