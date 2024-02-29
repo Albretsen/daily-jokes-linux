@@ -78,14 +78,10 @@ function buildWhereClause(filters, exclude) {
 
   if (exclude) {
     Object.keys(exclude).forEach(key => {
-      if (Array.isArray(exclude[key])) {
-        whereClause[key] = { notIn: exclude[key] };
-      } else {
-        if (whereClause[key]) {
-          whereClause[key] = { ...whereClause[key], not: exclude[key] };
-        } else {
-          whereClause[key] = { not: exclude[key] };
-        }
+      if (exclude[key].notIn) {
+        whereClause[key] = { notIn: exclude[key].notIn };
+      } else if (exclude[key].not !== undefined) {
+        whereClause[key] = { not: exclude[key].not };
       }
     });
   }

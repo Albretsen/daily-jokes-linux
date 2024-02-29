@@ -182,16 +182,18 @@ router.post("/search", async (req, res, next) => {
 router.post("/search/swipe", async (req, res, next) => {
   try {
     const currentContestId = (await ContestService.getCurrentContest()).id;
-    let likedJokeIds = await UserJokeLikeService.findJokeIdsByContest(currentContestId);
+    let likedJokeIds = await UserJokeLikeService.findJokeIdsByContest(currentContestId, req.user.id);
 
     let criteria = req.body;
 
     criteria.exclude = criteria.exclude || {};
+    criteria.filters = criteria.filters || {};
 
     if (likedJokeIds.length > 0) {
         criteria.exclude.id = { notIn: likedJokeIds };
     }
 
+    criteria.filters.contestId = currentContestId;
     criteria.exclude.userId = { not: req.user.id };
 
     const results = await JokeService.findByCriteria(criteria);

@@ -16,11 +16,12 @@ class UserJokeLikeService {
         }
     }
 
-    static async findJokeIdsByContest(contestId) {
+    static async findJokeIdsByContest(contestId, userId) {
         try {
             const likes = await UserJokeLike.findMany({
                 where: {
                     contestId: contestId,
+                    userId: userId,
                 },
                 select: {
                     jokeId: true, 
