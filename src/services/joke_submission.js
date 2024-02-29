@@ -38,7 +38,12 @@ class JokeSubmissionService {
     }
 
     static async getOrCreateSubmission(userId, contestId) {
-        let submission = await this.get(userId, contestId);
+        let submission;
+        try {
+            submission = await this.get(userId, contestId);
+        } catch(err) {
+            submission = undefined;
+        }
         if (!submission) {
             submission = await this.create({
                 userId,

@@ -10,9 +10,28 @@ class JokeDatasetService {
         }
     }
 
-    static async get(id) {
+    static async findByCriteria(criteria) {
         try {
-            return await JokeDataset.findUnique({ where: { id } });
+            let whereClause = {};
+            if (criteria.category) {
+                // Using contains for case-insensitive matching
+                whereClause.category = {
+                    contains: criteria.category,
+                    mode: 'insensitive', // Makes the comparison case-insensitive
+                };
+            }
+
+            return await JokeDataset.findMany({
+                where: whereClause,
+            });
+        } catch (err) {
+            throw new DatabaseError(err);
+        }
+    }
+
+    static async get(category) {
+        try {
+            return await JokeDataset.findUnique({ where: { category } });
         } catch (err) {
             throw new DatabaseError(err);
         }

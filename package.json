@@ -26,6 +26,7 @@
   "homepage": "https://github.com/Albretsen/daily-jokes-linux#readme",
   "dependencies": {
     "@prisma/client": "^3.15.2",
+    "axios": "^1.6.7",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
