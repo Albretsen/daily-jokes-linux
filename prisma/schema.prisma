@@ -37,6 +37,7 @@ model Contest {
   jokes          Joke[]
   JokeSubmission JokeSubmission[]
   UserJokeLike   UserJokeLike[]
+  bots           Boolean          @default(false)
 }
 
 model Joke {
