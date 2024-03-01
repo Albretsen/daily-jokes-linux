@@ -1,5 +1,5 @@
 import fs from 'fs';
-import path from 'path'; // Import the path module
+import path from 'path'; // Import the path module to handle file paths
 import JokeDatasetService from '../services/joke_dataset.js';
 
 export const readJsonFile = (filePath, callback) => {
@@ -18,8 +18,8 @@ export const readJsonFile = (filePath, callback) => {
 };
 
 export const JSONFileToTable = () => {
-    // Use path.resolve to ensure the file path is correctly formed based on the current file's location
-    const filePath = path.resolve(__dirname, './dataset/wocka.json');
+    // Correct the path based on your updated requirement
+    const filePath = path.resolve(__dirname, '../../dataset/wock.json');
     readJsonFile(filePath, async (result) => {
         let i = 0;
         while (typeof result[i] == 'object') {
