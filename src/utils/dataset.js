@@ -1,5 +1,6 @@
 import fs from 'fs';
-import path from 'path'; // Import the path module to handle file paths
+import path from 'path';
+import { fileURLToPath } from 'url'; // Import the fileURLToPath function
 import JokeDatasetService from '../services/joke_dataset.js';
 
 export const readJsonFile = (filePath, callback) => {
@@ -18,8 +19,9 @@ export const readJsonFile = (filePath, callback) => {
 };
 
 export const JSONFileToTable = () => {
-    // Correct the path based on your updated requirement
-    const filePath = path.resolve(__dirname, '../../dataset/wock.json');
+    // Convert the URL to a file path and resolve the correct path to wock.json
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+    const filePath = path.resolve(__dirname, '../../dataset/wocka.json');
     readJsonFile(filePath, async (result) => {
         let i = 0;
         while (typeof result[i] == 'object') {
