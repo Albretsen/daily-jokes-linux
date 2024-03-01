@@ -8,6 +8,8 @@ let TOKENS = ["zdrCqhzf1j8Eg36ShhX79j7ta.YBCv848SElDO9A8GpO7aAGiexeVhSFgrKJw5ls"
 
 export const ExecuteBots = async () => {
     const contest = await ContestService.getCurrentContest();
+    if (contest.bots) return;
+    await ContestService.update(contest.id, { bots: true });
     const jokes = await JokeDatasetService.findByCriteria({ category: contest.topic });
 
     if (jokes.length > 0) {
