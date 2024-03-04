@@ -72,25 +72,31 @@ router.post("", requireSchema(schema), async (req, res, next) => {
     const submissionStatus = await JokeSubmissionService.submitJoke(req.user.id);
 
     if (!submissionStatus.canSubmit) {
-      res.status(400).json({ error: "No submissions available", remainingSubmissions: submissionStatus.remainingSubmissions });
-    } else {
-      const jokeData = await GenerateJokeJSON(req.user.id, req.validatedBody.textBody);
-      const obj = await JokeService.create(jokeData);
-
-      res.status(201).json({
-        joke: obj,
-        message: submissionStatus.message,
+      return res.status(400).json({
+        error: "No submissions available",
         remainingSubmissions: submissionStatus.remainingSubmissions
       });
     }
+
+    const jokeData = await GenerateJokeJSON(req.user.id, req.validatedBody.textBody);
+    const obj = await JokeService.create(jokeData);
+
+    return res.status(201).json({
+      joke: obj,
+      message: submissionStatus.message,
+      remainingSubmissions: submissionStatus.remainingSubmissions
+    });
+
   } catch (error) {
-    if (error.isClientError && error.isClientError()) {
-      res.status(400).json({ error: error.message });
+    if (error.isClientError && typeof error.isClientError === 'function' && error.isClientError()) {
+      return res.status(400).json({ error: error.message });
     } else {
-      next(error);
+      console.error("Unhandled error in POST /joke:", error);
+      return next(error);
     }
   }
 });
+
 
 /** @swagger
  *

@@ -1,1 +1,27 @@
-export let topics = ["Sports", "Children", "One liners", "Knock-Knock", "Anything goes", "Blond", "At work", "Medical", "Lightbulb", "Men / Women", "Bar", "News / Politics", "College", "Tech", "Lawyer" , "Redneck", "Puns", "Blonde", "Yo momma!", "Gross", "Insults", "Animal", "Religious"];
+export const topics = [
+    "Sports",
+    "Children",
+    "One Liners",
+    "Knock-Knock",
+    "Other / Misc",
+    "Blond",
+    "At Work",
+    "Medical",
+    "Lightbulb",
+    "Men / Women",
+    "Bar",
+    "News / Politics",
+    "College",
+    "Tech",
+    "Lawyer",
+    "Redneck",
+    "Puns",
+    "Blonde",
+    "Yo Momma",
+    "Gross",
+    "Insults",
+    "Animal",
+    "Yo Mama",
+    "Religious"
+  ];
+  
