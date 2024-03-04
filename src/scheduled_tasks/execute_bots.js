@@ -3,10 +3,18 @@ import { ExecuteBots } from '../utils/bot.js';
 
 
 export let ScheduleExecuteBots = () => {
-    ExecuteBots();
+    try {
+        ExecuteBots();
+    } catch (err) {
+        console.log("Error executing bots: " + err);
+    }
 
     return cron.schedule('0 5 * * *', async () => {
-        await ExecuteBots();
+        try {
+            await ExecuteBots();
+        } catch (err) {
+            console.log("Error executing bots: " + err);
+        }
     }, {
         scheduled: true
     });
