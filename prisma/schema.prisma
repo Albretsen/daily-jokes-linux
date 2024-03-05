@@ -25,10 +25,11 @@ model User {
 
   Coin           Coin[]
   JokeSubmission JokeSubmission[]
+  UserJokeLike   UserJokeLike[]
+  Notification   Notification[]
   @@index([email])
   @@index([token])
-  UserJokeLike UserJokeLike[]
-  Notification Notification[]
+  ContestResult ContestResult[]
 }
 
 model Contest {
@@ -39,6 +40,7 @@ model Contest {
   JokeSubmission JokeSubmission[]
   UserJokeLike   UserJokeLike[]
   bots           Boolean          @default(false)
+  ContestResult  ContestResult[]
 }
 
 model Joke {
@@ -51,9 +53,10 @@ model Joke {
   user            User     @relation(fields: [userId], references: [id])
   contest         Contest  @relation(fields: [contestId], references: [id])
 
+  UserJokeLike UserJokeLike[]
   @@index([userId])
   @@index([contestId])
-  UserJokeLike UserJokeLike[]
+  ContestResult ContestResult[]
 }
 
 model Coin {
@@ -98,15 +101,33 @@ model UserJokeLike {
 }
 
 model Notification {
-  id          Int      @id @default(autoincrement())
-  userId      Int 
-  type        String   // The type of notification (e.g., 'NewJokePosted', 'ContestResult', 'JokeLiked', 'DailyReminder')
-  title       String 
-  message     String 
-  createdAt   DateTime @default(now())
-  read        Boolean  @default(false)
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  type      String // The type of notification (e.g., 'NewJokePosted', 'ContestResult', 'JokeLiked', 'DailyReminder')
+  title     String
+  message   String
+  createdAt DateTime @default(now())
+  read      Boolean  @default(false)
 
-  user        User     @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 
-  @@index([userId]) 
+  @@index([userId])
+}
+
+model ContestResult {
+  id        Int   @id @default(autoincrement())
+  contestId Int
+  userId    Int
+  jokeId    Int // ID of the highest-scoring joke submitted by the user in the contest
+  score     Float // Score of the highest-scoring joke
+  rank      Int? // The ranking of the user in this specific contest, based on their highest-scoring joke
+
+  contest Contest @relation(fields: [contestId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+  joke    Joke    @relation(fields: [jokeId], references: [id])
+
+  @@unique([contestId, userId])
+  @@index([contestId])
+  @@index([userId])
+  @@index([jokeId])
 }
