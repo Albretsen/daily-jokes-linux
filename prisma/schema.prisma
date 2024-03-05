@@ -28,6 +28,7 @@ model User {
   @@index([email])
   @@index([token])
   UserJokeLike UserJokeLike[]
+  Notification Notification[]
 }
 
 model Contest {
@@ -94,4 +95,18 @@ model UserJokeLike {
   contest Contest @relation(fields: [contestId], references: [id])
 
   @@unique([userId, jokeId, contestId], name: "user_joke_contest_unique")
+}
+
+model Notification {
+  id          Int      @id @default(autoincrement())
+  userId      Int 
+  type        String   // The type of notification (e.g., 'NewJokePosted', 'ContestResult', 'JokeLiked', 'DailyReminder')
+  title       String 
+  message     String 
+  createdAt   DateTime @default(now())
+  read        Boolean  @default(false)
+
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@index([userId]) 
 }
