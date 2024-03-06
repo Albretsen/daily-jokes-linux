@@ -22,6 +22,7 @@ model User {
   isActive    Boolean  @default(true)
   profile     String?  @default("0") @db.VarChar(255)
   jokes       Joke[]
+  expoPushToken String @default("") @db.VarChar(255)
 
   Coin           Coin[]
   JokeSubmission JokeSubmission[]
