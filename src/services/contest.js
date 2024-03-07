@@ -5,8 +5,8 @@ import { formatDate } from "../utils/date.js";
 import { getCurrentContestDate } from "../utils/date.js";
 
 class ContestService {
-  static async getCurrentContest() {
-    const contestDate = getCurrentContestDate();
+  static async getCurrentContest(date) {
+    const contestDate = date ? date : getCurrentContestDate();
     const contest = await ContestService.findByCriteria({ date: contestDate });
     if (!contest || contest.length === 0) throw new Error("Contest not found");
     return contest[0];

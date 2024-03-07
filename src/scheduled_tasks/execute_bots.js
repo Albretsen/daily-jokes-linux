@@ -1,7 +1,6 @@
 import cron from 'node-cron';
 import { ExecuteBots } from '../utils/bot.js'; 
 
-
 export let ScheduleExecuteBots = () => {
     try {
         ExecuteBots();

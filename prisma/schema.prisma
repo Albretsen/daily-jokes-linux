@@ -11,37 +11,38 @@ generator client {
 }
 
 model User {
-  id          Int      @id @default(autoincrement())
-  email       String   @unique @db.VarChar(255)
-  password    String   @db.VarChar(255)
-  token       String   @unique @db.VarChar(255)
-  deviceID    String?  @default("") @db.VarChar(255)
-  name        String   @db.VarChar(255)
-  createdAt   DateTime @default(now())
-  lastLoginAt DateTime @default(now())
-  isActive    Boolean  @default(true)
-  profile     String?  @default("0") @db.VarChar(255)
-  jokes       Joke[]
-  expoPushToken String @default("") @db.VarChar(255)
+  id            Int      @id @default(autoincrement())
+  email         String   @unique @db.VarChar(255)
+  password      String   @db.VarChar(255)
+  token         String   @unique @db.VarChar(255)
+  deviceID      String?  @default("") @db.VarChar(255)
+  name          String   @db.VarChar(255)
+  createdAt     DateTime @default(now())
+  lastLoginAt   DateTime @default(now())
+  isActive      Boolean  @default(true)
+  profile       String?  @default("0") @db.VarChar(255)
+  jokes         Joke[]
+  expoPushToken String   @default("") @db.VarChar(255)
 
   Coin           Coin[]
   JokeSubmission JokeSubmission[]
   UserJokeLike   UserJokeLike[]
   Notification   Notification[]
+  ContestResult  ContestResult[]
   @@index([email])
   @@index([token])
-  ContestResult ContestResult[]
 }
 
 model Contest {
-  id             Int              @id @default(autoincrement())
-  date           DateTime         @unique
-  topic          String
-  jokes          Joke[]
-  JokeSubmission JokeSubmission[]
-  UserJokeLike   UserJokeLike[]
-  bots           Boolean          @default(false)
-  ContestResult  ContestResult[]
+  id                Int              @id @default(autoincrement())
+  date              DateTime         @unique
+  topic             String
+  resultsCalculated Boolean          @default(false)
+  jokes             Joke[]
+  JokeSubmission    JokeSubmission[]
+  UserJokeLike      UserJokeLike[]
+  bots              Boolean          @default(false)
+  ContestResult     ContestResult[]
 }
 
 model Joke {
@@ -54,10 +55,10 @@ model Joke {
   user            User     @relation(fields: [userId], references: [id])
   contest         Contest  @relation(fields: [contestId], references: [id])
 
-  UserJokeLike UserJokeLike[]
+  UserJokeLike  UserJokeLike[]
+  ContestResult ContestResult[]
   @@index([userId])
   @@index([contestId])
-  ContestResult ContestResult[]
 }
 
 model Coin {
@@ -116,13 +117,13 @@ model Notification {
 }
 
 model ContestResult {
-  id        Int   @id @default(autoincrement())
+  id        Int     @id @default(autoincrement())
   contestId Int
   userId    Int
   jokeId    Int // ID of the highest-scoring joke submitted by the user in the contest
   score     Float // Score of the highest-scoring joke
   rank      Int? // The ranking of the user in this specific contest, based on their highest-scoring joke
-  read      Boolean  @default(false)
+  read      Boolean @default(false)
 
   contest Contest @relation(fields: [contestId], references: [id])
   user    User    @relation(fields: [userId], references: [id])
