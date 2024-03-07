@@ -27,5 +27,8 @@ export default {
   },
   jokeSubmission: {
     path: "/jokeSubmission",
+  },
+  notification: {
+    path: "/notification",
   }
 };

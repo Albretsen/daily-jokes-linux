@@ -12,4 +12,4 @@ export const Coin = prisma.Coin;
 export const JokeSubmission = prisma.JokeSubmission;
 export const UserJokeLike = prisma.UserJokeLike;
 export const ContestResult = prisma.ContestResult;
-export const Notificaton = prisma.Notificaton;
+export const Notification = prisma.Notification;

@@ -45,6 +45,56 @@ class NotificationService {
             throw new DatabaseError(err);
         }
     }
+
+    static async findByCriteria({ filters, exclude, pagination }) {
+        const whereClause = buildWhereClause(filters, exclude);
+        const paginationClause = calculatePagination(pagination);
+        return await executeQuery(whereClause, paginationClause);
+    }
+}
+
+function buildWhereClause(filters, exclude) {
+    const whereClause = {};
+
+    if (filters) {
+        Object.keys(filters).forEach(key => {
+            whereClause[key] = filters[key];
+        });
+    }
+
+    if (exclude) {
+        Object.keys(exclude).forEach(key => {
+            if (exclude[key].notIn) {
+                whereClause[key] = { notIn: exclude[key].notIn };
+            } else if (exclude[key].not !== undefined) {
+                whereClause[key] = { not: exclude[key].not };
+            }
+        });
+    }
+
+    return whereClause;
+}
+
+const MAX_PAGE_SIZE = 10;
+function calculatePagination(pagination = {}) {
+    if (!pagination.page) pagination.page = 1;
+    if (!pagination.page_size) pagination.page_size = MAX_PAGE_SIZE;
+    if (pagination.page_size > MAX_PAGE_SIZE) pagination.page_size = MAX_PAGE_SIZE;
+
+    const offset = (pagination.page - 1) * pagination.page_size;
+    return { skip: offset, take: pagination.page_size };
+}
+
+async function executeQuery(whereClause, { skip, take }) {
+    try {
+        return await Notification.findMany({
+            where: whereClause,
+            skip,
+            take,
+        });
+    } catch (err) {
+        throw new DatabaseError(err);
+    }
 }
 
 export default NotificationService;

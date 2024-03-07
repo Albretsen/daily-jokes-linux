@@ -122,6 +122,7 @@ model ContestResult {
   jokeId    Int // ID of the highest-scoring joke submitted by the user in the contest
   score     Float // Score of the highest-scoring joke
   rank      Int? // The ranking of the user in this specific contest, based on their highest-scoring joke
+  read      Boolean  @default(false)
 
   contest Contest @relation(fields: [contestId], references: [id])
   user    User    @relation(fields: [userId], references: [id])

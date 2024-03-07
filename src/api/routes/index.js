@@ -9,6 +9,7 @@ import pingRouter from "./ping.js"
 import contestRouter from "./contest.js";
 import coinRouter from "./coin.js";
 import jokeSubmissionRouter from "./joke_submission.js";
+import notificationRouter from "./notification.js";
 import urls from "../urls.js";
 import spec from "../openapi.js";
 
@@ -46,6 +47,9 @@ router.use(urls.apiPrefix + urls.coin.path, coinRouter);
 
 // JokeSubmission API
 router.use(urls.apiPrefix + urls.jokeSubmission.path, jokeSubmissionRouter);
+
+// JokeSubmission API
+router.use(urls.apiPrefix + urls.notification.path, notificationRouter);
 
 // Redirect browsers from index to API docs
 router.get("/", (req, res, next) => {
