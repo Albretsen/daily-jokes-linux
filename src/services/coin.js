@@ -4,10 +4,8 @@ import DatabaseError from "../models/error.js";
 class CoinService {
     static async purchase(userId, amountToDecrement) {
         try {
-            const coin = await CoinService.get(userId);
-            if (!coin) {
-                throw new Error('Coin not found');
-            }
+            let coin = await CoinService.getOrCreate(userId);
+
             if (coin.coins < amountToDecrement) {
                 throw new Error('Insufficient coin amount');
             }
@@ -15,6 +13,30 @@ class CoinService {
             const newAmount = coin.coins - amountToDecrement;
 
             return await CoinService.update(userId, { coins: newAmount });
+        } catch (err) {
+            throw new DatabaseError(err);
+        }
+    }
+
+    static async addCoins(userId, amountToAdd) {
+        try {
+            let coin = await CoinService.getOrCreate(userId);
+
+            const newAmount = coin.coins + amountToAdd;
+
+            return await CoinService.update(userId, { coins: newAmount });
+        } catch (err) {
+            throw new DatabaseError(err);
+        }
+    }
+
+    static async getOrCreate(userId) {
+        try {
+            let coin = await Coin.findUnique({ where: { userId } });
+            if (!coin) {
+                coin = await Coin.create({ data: { userId, coins: 0 } });
+            }
+            return coin;
         } catch (err) {
             throw new DatabaseError(err);
         }
