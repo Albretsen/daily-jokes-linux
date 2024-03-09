@@ -227,8 +227,9 @@ function calculatePagination(pagination = {}) {
 
 async function executeQuery(whereClause, { skip, take }) {
   try {
-    return await Notification.findMany({
+    return await ContestResult.findMany({
       where: whereClause,
+      include: { contest: true },
       skip,
       take,
     });

@@ -30,5 +30,8 @@ export default {
   },
   notification: {
     path: "/notification",
+  },
+  contestResult: {
+    path: "/contestresult",
   }
 };
