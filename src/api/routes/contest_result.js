@@ -21,8 +21,8 @@ const router = Router();
  *         description: ContestResult object
  */
 router.get("/unread", async (req, res) => {
-    const checkInterval = 5000; // Check every 5 seconds
-    const maxWaitTime = 60000; // Wait up to 1 minute before sending a timeout response
+    const checkInterval = 5000; 
+    const maxWaitTime = 60000; 
 
     const startTime = Date.now();
 
@@ -31,10 +31,15 @@ router.get("/unread", async (req, res) => {
             const results = await ContestResultService.findByCriteria({
                 filters: { userId: req.user.id, read: false }
             });
+            
             if (results.length > 0 || Date.now() - startTime >= maxWaitTime) {
-                res.json(results);
+                if (results.length === 0 && Date.now() - startTime >= maxWaitTime) {
+                    res.json([]); 
+                } else {
+                    res.json(results); 
+                }
             } else {
-                setTimeout(checkForNewResults, checkInterval);
+                setTimeout(checkForNewResults, checkInterval); 
             }
         } catch (error) {
             res.status(500).json({ error: "Internal server error" });
