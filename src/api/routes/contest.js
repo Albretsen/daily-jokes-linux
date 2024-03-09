@@ -37,8 +37,22 @@ router.get("", requireSchema(contestSchema), async (req, res, next) => {
         if (!date) date = new Date();
         else date = new Date(req.validatedBody.date);
 
-        const results = await Contest.findByCriteria({ date: date });
-        res.json(results);
+        const contests = await Contest.findByCriteria({ date: date });
+        if (contests.length === 0) {
+            return res.status(404).json({ error: "Contest not found" });
+        }
+
+        const contest = contests[0]; 
+
+        const participants = await Contest.getContestParticipants(contest.id);
+
+        const result = {
+            ...contest,
+            participants: participants,
+            totalParticipants: await Contest.countDistinctContestParticipants(contest.id),
+        };
+
+        res.json([result]);
     } catch (error) {
         if (error.isClientError && error.isClientError()) {
             res.status(400).json({ error: error.message });

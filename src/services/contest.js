@@ -1,10 +1,56 @@
 import { Contest } from "../models/init.js";
 import DatabaseError from "../models/error.js";
 import { formatDate } from "../utils/date.js";
+import JokeService from "./joke.js";
+import UserService from "./user.js";
+import { prisma } from "../models/init.js";
 
 import { getCurrentContestDate } from "../utils/date.js";
 
 class ContestService {
+  static async getContestParticipants(contestId) {
+    const uniqueUserIds = new Set();
+    let currentPage = 1;
+    const pageSize = 10; // Adjust if necessary for efficiency
+    let hasMoreJokes = true;
+
+    try {
+      while (uniqueUserIds.size < 10 && hasMoreJokes) {
+        const jokes = await JokeService.findByCriteria({
+          filters: { contestId: contestId },
+          pagination: { page: currentPage, page_size: pageSize }
+        });
+
+        jokes.forEach(joke => {
+          if (uniqueUserIds.size < 10) {
+            uniqueUserIds.add(joke.userId);
+          }
+        });
+
+        currentPage++;
+        hasMoreJokes = jokes.length === pageSize;
+      }
+
+      const userInfosPromises = Array.from(uniqueUserIds).map(userId => UserService.getPublicUserInfo(userId));
+      const userInfos = await Promise.all(userInfosPromises);
+
+      return userInfos;
+    } catch (err) {
+      throw new DatabaseError(err);
+    }
+  }
+
+  static async countDistinctContestParticipants(contestId) {
+    try {
+      const result = await prisma.$queryRaw`SELECT COUNT(DISTINCT "userId") FROM "Joke" WHERE "contestId" = ${contestId}`;
+      const count = result[0].count;
+
+      return count;
+    } catch (err) {
+      throw new DatabaseError(err);
+    }
+  }
+
   static async getCurrentContest(date) {
     const contestDate = date ? date : getCurrentContestDate();
     const contest = await ContestService.findByCriteria({ date: contestDate });

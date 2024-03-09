@@ -9,6 +9,26 @@ const generateRandomToken = () =>
   randomBytes(48).toString("base64").replace(/[+/]/g, ".");
 
 class UserService {
+  static async getPublicUserInfo(userId) {
+    try {
+      const user = await User.findUnique({
+        where: { id: userId },
+        select: {
+          id: true,
+          name: true,
+          profile: true,
+          createdAt: true,
+        },
+      });
+
+      if (!user) throw new Error("User not found");
+
+      return user;
+    } catch (err) {
+      throw new DatabaseError(err);
+    }
+  }
+
   static async list() {
     try {
       const users = await User.findMany();
