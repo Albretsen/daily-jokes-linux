@@ -4,7 +4,7 @@ import { topics } from "../../assets/topics.js";
 const DAYS_AHEAD = 10;
 
 export const CheckContestOnDate = async (date) => {
-    const result = await contest.findByCriteria({ date: new Date(date) });
+    const result = await contest.findByCriteriaLegacy({ date: new Date(date) });
     if (!result[0]) await AddNewContestToDB(date); 
 }
 

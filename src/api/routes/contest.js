@@ -37,7 +37,7 @@ router.get("", requireSchema(contestSchema), async (req, res, next) => {
         if (!date) date = new Date();
         else date = new Date(req.validatedBody.date);
 
-        const contests = await Contest.findByCriteria({ date: date });
+        const contests = await Contest.findByCriteriaLegacy({ date: date });
         if (contests.length === 0) {
             return res.status(404).json({ error: "Contest not found" });
         }

@@ -13,7 +13,7 @@ describe("Contest utilities", () => {
 
     describe("CheckContestOnDate function", () => {
         test("should add a new contest to the database if not present", async () => {
-            contest.findByCriteria.mockResolvedValue([]); // Simulate no contest found for the given date
+            contest.findByCriteriaLegacy.mockResolvedValue([]); // Simulate no contest found for the given date
 
             await CheckContestOnDate(date);
 
@@ -24,7 +24,7 @@ describe("Contest utilities", () => {
         });
 
         test("should not add a new contest if already present", async () => {
-            contest.findByCriteria.mockResolvedValue([true]); // Simulate contest found for the given date
+            contest.findByCriteriaLegacy.mockResolvedValue([true]); // Simulate contest found for the given date
 
             await CheckContestOnDate(date);
 
