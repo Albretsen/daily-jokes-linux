@@ -65,7 +65,7 @@ router.get("", requireSchema(contestSchema), async (req, res, next) => {
 /**
  * @swagger
  * /contest/search:
- *   get:
+ *   post:
  *     summary: Returns an array of contests
  *     description: Desc.
  *     requestBody:
@@ -75,7 +75,7 @@ router.get("", requireSchema(contestSchema), async (req, res, next) => {
  *         description: Successful response.
  */
 
-router.get("/search", requireSchema(contestSchema), async (req, res, next) => {
+router.post("/search", requireSchema(contestSchema), async (req, res, next) => {
     try {
         const criteria = req.body;
         
