@@ -62,4 +62,32 @@ router.get("", requireSchema(contestSchema), async (req, res, next) => {
     }
 });
 
+/**
+ * @swagger
+ * /contest/search:
+ *   get:
+ *     summary: Returns an array of contests
+ *     description: Desc.
+ *     requestBody:
+ *       required: false
+ *     responses:
+ *       200:
+ *         description: Successful response.
+ */
+
+router.get("/search", requireSchema(contestSchema), async (req, res, next) => {
+    try {
+        const criteria = req.body;
+        
+        const results = await Contest.findByCriteria(criteria);
+        res.json(results);
+      } catch (error) {
+        if (error.isClientError && error.isClientError()) {
+          res.status(400).json({ error: error.message });
+        } else {
+          next(error);
+        }
+      }
+});
+
 export default router;
