@@ -2,12 +2,26 @@ import { Notification } from "../models/init.js";
 import DatabaseError from "../models/error.js";
 
 class NotificationService {
-    static async sendNotifications(tokens, message) {
-        this.sendExpoNotifications(tokens, message);
-        this.create(message)
+    static async sendNotifications(users, message) {
+        this.sendExpoNotifications(users, message);
+
+        users.forEach(async (user) => {
+            const notificationData = {
+                userId: user.userId,
+                title: message.title,
+                body: message.body,
+                data: message.data, 
+            };
+
+            try {
+                await Notification.create({ data: notificationData });
+            } catch (err) {
+                console.error(`Error creating notification in DB for user ${user.userId}:`, err);
+            }
+        });
     }
 
-    static async sendExpoNotifications(tokens, message) {
+    static async sendExpoNotifications(users, message) {
         const expoApiUrl = 'https://exp.host/--/api/v2/push/send';
         const headers = {
             'Content-Type': 'application/json',
@@ -15,8 +29,8 @@ class NotificationService {
             'Accept-Encoding': 'gzip, deflate'
         };
         
-        const notifications = tokens.map(token => ({
-            to: token,
+        const notifications = users.map(user => ({
+            to: user.token,
             title: message.title,
             body: message.body,
             data: message.data, 
@@ -61,6 +75,7 @@ class NotificationService {
     }
 
     static async create(data) {
+        console.log("hey 2");
         try {
             return await Notification.create({ data });
         } catch (err) {
