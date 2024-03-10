@@ -1,62 +1,83 @@
 import { Notification } from "../models/init.js";
 import DatabaseError from "../models/error.js";
+import UserService from "./user.js";
 
 class NotificationService {
-    static async sendNotifications(users, message) {
-        this.sendExpoNotifications(users, message);
+    static async sendNotifications(messages) {
+        const userIds = messages.map(message => message.userId);
+        const users = await UserService.getUsersByIds(userIds);
+        const userMap = new Map(users.map(user => [user.id, user.expoPushToken]));
 
-        users.forEach(async (user) => {
+        const notifications = messages.map(message => {
+            const expoId = userMap.get(message.userId);
+            return { ...message, token: expoId };
+        });
+
+        const messageBatches = this.chunkArray(notifications, 100);
+
+        for (const batch of messageBatches) {
+            await this.sendExpoNotifications(batch);
+        }
+
+        messages.forEach(async (message) => {
             const notificationData = {
-                userId: user.userId,
+                userId: message.userId,
                 title: message.title,
                 body: message.body,
-                data: message.data, 
+                data: typeof(message.data) === 'object' ? message.data : {},
             };
 
             try {
                 await Notification.create({ data: notificationData });
             } catch (err) {
-                console.error(`Error creating notification in DB for user ${user.userId}:`, err);
+                console.error(`Error creating notification in DB for userId ${message.userId}:`, err);
             }
         });
     }
 
-    static async sendExpoNotifications(users, message) {
+    static async sendExpoNotifications(messages) {
         const expoApiUrl = 'https://exp.host/--/api/v2/push/send';
         const headers = {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
             'Accept-Encoding': 'gzip, deflate'
         };
-        
-        const notifications = users.map(user => ({
-            to: user.token,
-            title: message.title,
-            body: message.body,
-            data: message.data, 
+
+        const notifications = messages.map(({ token, title, body, data }) => ({
+            to: token,
+            title: title,
+            body: body,
+            data: data,
         }));
-        
+
         try {
             const response = await fetch(expoApiUrl, {
                 method: 'POST',
                 headers: headers,
                 body: JSON.stringify(notifications),
             });
-    
+
             const jsonResponse = await response.json();
-            
+
             if (jsonResponse.data && jsonResponse.data.some(notification => notification.status === 'error')) {
                 const errorMessages = jsonResponse.data.filter(notification => notification.status === 'error').map(notification => notification.message);
-                
+
                 throw new Error(`Errors occurred with some notifications: ${errorMessages.join("; ")}`);
             }
-            
+
             return jsonResponse;
         } catch (error) {
             console.error("Error sending Expo notifications:", error);
         }
     }
-    
+
+    static chunkArray(array, size) {
+        const chunkedArr = [];
+        for (let i = 0; i < array.length; i += size) {
+            chunkedArr.push(array.slice(i, i + size));
+        }
+        return chunkedArr;
+    }
 
     static async list() {
         try {

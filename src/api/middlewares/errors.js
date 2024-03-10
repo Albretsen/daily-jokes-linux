@@ -10,10 +10,12 @@ const showError = config.NODE_ENV !== "production";
  */
 export const handle404 = (req, res, next) => {
   const { method, originalUrl } = req;
-  log.info(
-    { method, originalUrl },
-    `Unhandled API request ${method} ${originalUrl}`
-  );
+  if (showError) {
+    log.info(
+      { method, originalUrl },
+      `Unhandled API request ${method} ${originalUrl}`
+    );
+  }
   res
     .status(404)
     .json({ error: "Resource not found or unsupported HTTP method" });
