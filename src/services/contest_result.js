@@ -3,8 +3,44 @@ import DatabaseError from "../models/error.js";
 import JokeService from "./joke.js";
 import ContestService from "./contest.js";
 import CoinService from "./coin.js";
+import NotificationService from "./notification.js";
+import { formatTimestampToShortDate } from "../utils/date.js";
 
 class ContestResultService {
+  static async sendUserNotifications(sortedUsers, contest) {
+    const messages = sortedUsers.map(userResult => {
+      const contestDate = formatTimestampToShortDate(contest.date);
+      const baseTitle = `${contestDate}`;
+      let title;
+      let body;
+
+      switch (userResult.rank) {
+        case 1:
+          title = `${baseTitle}: Champion!`;
+          body = `You won! Enjoy your 100 coins and the top spot humor glory.`;
+          break;
+        case 2:
+          title = `${baseTitle}: 2nd Place!`;
+          body = `Great job! 2nd place earns you 50 coins and loads of laughs.`;
+          break;
+        case 3:
+          title = `${baseTitle}: 3rd Place!`;
+          body = `Well done! 3rd place and 30 coins for your comedic prowess.`;
+          break;
+        default:
+          title = `${baseTitle}: Results`;
+          body = `Thanks for joining! ${userResult.coins > 0 ? `You've earned ${userResult.coins} coins.` : 'Keep sharing the laughter.'}`;
+      }
+      return {
+        userId: userResult.userId,
+        title,
+        body,
+      };
+    });
+
+    await NotificationService.sendNotifications(messages);
+  }
+
   static async list() {
     try {
       return ContestResult.findMany();
@@ -81,7 +117,10 @@ class ContestResultService {
 
         await CoinService.addCoins(userResult.userId, coins);
       }
+
       await this.markResultsAsCalculated(contestId);
+      const contest = await ContestService.get(contestId);
+      await this.sendUserNotifications(sortedUsers, contest);
       return true;
     } catch (err) {
       if (err?.code === "P2002") await this.markResultsAsCalculated(contestId);

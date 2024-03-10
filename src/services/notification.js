@@ -8,7 +8,10 @@ class NotificationService {
         const users = await UserService.getUsersByIds(userIds);
         const userMap = new Map(users.map(user => [user.id, user.expoPushToken]));
 
-        const notifications = messages.map(message => {
+        const notifications = messages.filter(message => {
+            const expoId = userMap.get(message.userId);
+            return expoId && /^ExponentPushToken\[.+\]$/.test(expoId);
+        }).map(message => {
             const expoId = userMap.get(message.userId);
             return { ...message, token: expoId };
         });
@@ -64,6 +67,8 @@ class NotificationService {
 
                 throw new Error(`Errors occurred with some notifications: ${errorMessages.join("; ")}`);
             }
+
+            console.log(jsonResponse);
 
             return jsonResponse;
         } catch (error) {
