@@ -2,6 +2,48 @@ import { Notification } from "../models/init.js";
 import DatabaseError from "../models/error.js";
 
 class NotificationService {
+    static async sendNotifications(tokens, message) {
+        this.sendExpoNotifications(tokens, message);
+        this.create(message)
+    }
+
+    static async sendExpoNotifications(tokens, message) {
+        const expoApiUrl = 'https://exp.host/--/api/v2/push/send';
+        const headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Accept-Encoding': 'gzip, deflate'
+        };
+        
+        const notifications = tokens.map(token => ({
+            to: token,
+            title: message.title,
+            body: message.body,
+            data: message.data, 
+        }));
+        
+        try {
+            const response = await fetch(expoApiUrl, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(notifications),
+            });
+    
+            const jsonResponse = await response.json();
+            
+            if (jsonResponse.data && jsonResponse.data.some(notification => notification.status === 'error')) {
+                const errorMessages = jsonResponse.data.filter(notification => notification.status === 'error').map(notification => notification.message);
+                
+                throw new Error(`Errors occurred with some notifications: ${errorMessages.join("; ")}`);
+            }
+            
+            return jsonResponse;
+        } catch (error) {
+            console.error("Error sending Expo notifications:", error);
+        }
+    }
+    
+
     static async list() {
         try {
             return Notification.findMany();

@@ -105,11 +105,13 @@ model UserJokeLike {
 model Notification {
   id        Int      @id @default(autoincrement())
   userId    Int
-  type      String // The type of notification (e.g., 'NewJokePosted', 'ContestResult', 'JokeLiked', 'DailyReminder')
+  type      String   @default("")
   title     String
-  message   String
+  body      String
   createdAt DateTime @default(now())
   read      Boolean  @default(false)
+  expoId    String   @default("")
+  data      Json?
 
   user User @relation(fields: [userId], references: [id])
 
