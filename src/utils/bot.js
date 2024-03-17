@@ -13,10 +13,12 @@ export const ExecuteBots = async () => {
     const jokes = await JokeDatasetService.findByCriteria({ category: contest.topic });
 
     if (jokes.length > 0) {
-        TOKENS.forEach(async (token) => {
+        for (const token of TOKENS) {
             const jokesToPost = jokes.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 2) + 2);
-            jokesToPost.forEach(joke => postJoke(joke, token));
-        });
+            for (const joke of jokesToPost) {
+                await postJoke(joke, token);
+            }
+        }
     } else {
         console.log("No jokes found for the contest topic.");
     }

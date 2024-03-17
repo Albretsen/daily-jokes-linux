@@ -150,7 +150,7 @@ router.post("/search", async (req, res, next) => {
 
 /** @swagger
  *
- * /joke/search:
+ * /joke/search/swipe:
  *   get:
  *     tags: [Joke]
  *     summary: Search Jokes by criteria for swipe

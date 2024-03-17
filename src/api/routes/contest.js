@@ -1,5 +1,6 @@
 import { Router } from "express";
 import Contest from "../../services/contest.js";
+import ContestService from "../../services/contest.js";
 import { contestSchema } from "../schemas/contest.js";
 import { requireSchema } from "../middlewares/validate.js";
 
@@ -78,8 +79,8 @@ router.get("", requireSchema(contestSchema), async (req, res, next) => {
 router.post("/search", requireSchema(contestSchema), async (req, res, next) => {
     try {
         const criteria = req.body;
-        
-        const results = await Contest.findByCriteria(criteria);
+
+        const results = await ContestService.findByCriteria(criteria);
         res.json(results);
       } catch (error) {
         if (error.isClientError && error.isClientError()) {
