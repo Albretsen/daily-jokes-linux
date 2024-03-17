@@ -24,12 +24,15 @@ const router = Router();
  *             schema:
  *               type: array
  */
-router.get("", async (req, res, next) => {
+router.post("", async (req, res, next) => {
     try {
         let criteria = req.body;
 
         if (!criteria) criteria.filters.userId = req.user.id;
-        else criteria = { filters: { userId: req.user.id }}
+        else {
+            if (!criteria.filters) criteria.filters = {};
+            criteria.filters.userId = req.user.id;
+        }
 
         const results = await NotificationService.findByCriteria(criteria);
         res.json(results);
