@@ -158,7 +158,7 @@ function buildWhereClause(filters, exclude) {
     return whereClause;
 }
 
-const MAX_PAGE_SIZE = 10;
+const MAX_PAGE_SIZE = 25;
 function calculatePagination(pagination = {}) {
     if (!pagination.page) pagination.page = 1;
     if (!pagination.page_size) pagination.page_size = MAX_PAGE_SIZE;
