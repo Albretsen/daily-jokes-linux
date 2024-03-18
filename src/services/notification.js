@@ -27,6 +27,7 @@ class NotificationService {
                 userId: message.userId,
                 title: message.title,
                 body: message.body,
+                type: message?.type ? message.type : "",
                 data: typeof(message.data) === 'object' ? message.data : {},
             };
 

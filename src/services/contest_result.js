@@ -17,15 +17,15 @@ class ContestResultService {
       switch (userResult.rank) {
         case 1:
           title = `${baseTitle}: Champion!`;
-          body = `You won! Enjoy your 100 coins and the top spot humor glory.`;
+          body = `You won! Enjoy your 100 coins!`;
           break;
         case 2:
           title = `${baseTitle}: 2nd Place!`;
-          body = `Great job! 2nd place earns you 50 coins and loads of laughs.`;
+          body = `Great job! 2nd place earns you 50 coins!`;
           break;
         case 3:
           title = `${baseTitle}: 3rd Place!`;
-          body = `Well done! 3rd place and 30 coins for your comedic prowess.`;
+          body = `Well done! 3rd place and 30 coins for you!`;
           break;
         default:
           title = `${baseTitle}: Results`;
@@ -35,6 +35,8 @@ class ContestResultService {
         userId: userResult.userId,
         title,
         body,
+        type: "contestResult",
+        data: { contestId: contest.id }
       };
     });
 
