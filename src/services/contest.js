@@ -74,8 +74,8 @@ class ContestService {
     }
   }
 
-  static async findByCriteria({ filters, sortBy, exclude, pagination }) {
-    const whereClause = buildWhereClause(filters, exclude);
+  static async findByCriteria({ filters, sortBy, exclude, searchQuery, pagination }) {
+    const whereClause = buildWhereClause(filters, exclude, searchQuery);
     const orderByClause = buildOrderByClause(sortBy);
     const paginationClause = calculatePagination(pagination);
     return await executeQuery(whereClause, orderByClause, paginationClause);
@@ -140,7 +140,7 @@ function calculatePagination(pagination = {}) {
   return { skip: offset, take: pagination.page_size };
 }
 
-function buildWhereClause(filters, exclude) {
+function buildWhereClause(filters, exclude, searchQuery) {
   const whereClause = {};
 
   if (filters) {
@@ -157,6 +157,13 @@ function buildWhereClause(filters, exclude) {
         whereClause[key] = { not: exclude[key].not };
       }
     });
+  }
+
+  if (searchQuery && searchQuery.trim() !== "") {
+    whereClause.topic = {
+      contains: searchQuery,
+      mode: 'insensitive',
+    };
   }
 
   return whereClause;
