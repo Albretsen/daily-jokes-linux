@@ -29,6 +29,8 @@ model User {
   UserJokeLike   UserJokeLike[]
   Notification   Notification[]
   ContestResult  ContestResult[]
+  profilePictures ProfilePicture[]
+  profileBackgrounds ProfileBackground[]
   @@index([email])
   @@index([token])
 }
@@ -136,4 +138,24 @@ model ContestResult {
   @@index([contestId])
   @@index([userId])
   @@index([jokeId])
+}
+
+model ProfilePicture {
+  id        Int    @id @default(autoincrement())
+  userId    Int
+  pictureId String @db.VarChar(255) // Assumes picture ID is a string; adjust type as necessary
+  user      User   @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model ProfileBackground {
+  id        Int    @id @default(autoincrement())
+  userId    Int
+  backgroundId String @db.VarChar(255) // Assumes picture ID is a string; adjust type as necessary
+  user      User   @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }
