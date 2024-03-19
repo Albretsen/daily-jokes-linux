@@ -13,3 +13,5 @@ export const JokeSubmission = prisma.JokeSubmission;
 export const UserJokeLike = prisma.UserJokeLike;
 export const ContestResult = prisma.ContestResult;
 export const Notification = prisma.Notification;
+export const ProfilePicture = prisma.ProfilePicture;
+export const ProfileBackground = prisma.ProfileBackground;

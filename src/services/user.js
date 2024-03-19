@@ -66,6 +66,10 @@ class UserService {
     try {
       const user = await User.findUnique({
         where: { id },
+        include: {
+          profilePictures: true,
+          profileBackgrounds: true,
+        }
       });
 
       if (!user) return null;
@@ -104,6 +108,10 @@ class UserService {
     try {
       const user = await User.findUnique({
         where: { email },
+        include: {
+          profilePictures: true,
+          profileBackgrounds: true,
+        }
       });
       if (!user) return null;
 
@@ -128,6 +136,10 @@ class UserService {
     try {
       const user = await User.findUnique({
         where: { token },
+        include: {
+          profilePictures: true,
+          profileBackgrounds: true,
+        }
       });
       if (!user) return null;
 

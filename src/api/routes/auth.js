@@ -10,6 +10,9 @@ import {
   changePasswordSchema,
   loginSchema,
 } from "../schemas/auth.js";
+import CoinService from "../../services/coin.js";
+import ProfilePictureService from "../../services/profile_picture.js";
+import ProfileBackgroundService from "../../services/profile_background.js";
 
 const router = Router();
 
@@ -160,5 +163,111 @@ router.post(
     res.status(204).send();
   }
 );
+
+
+router.post("/purchaseProfilePicture", authenticateWithToken, async (req, res, next) => {
+  const { pictureId } = req.body;
+  const userId = req.user.id;
+  const amountToDecrement = 50; 
+
+  try {
+    const ownedPictures = await ProfilePictureService.getByUserId(userId);
+    const isOwned = ownedPictures.some(picture => picture.pictureId === pictureId);
+
+    if (isOwned) {
+      return res.status(400).json({ error: "Profile picture is already owned" });
+    }
+
+    await CoinService.purchase(userId, amountToDecrement);
+
+    try {
+      await ProfilePictureService.create({ userId, pictureId });
+
+      res.status(200).json({ message: "Profile picture purchased successfully" });
+    } catch (error) {
+      await CoinService.addCoins(userId, amountToDecrement);
+      res.status(500).json({ error: "Failed to purchase profile picture, coins refunded" });
+    }
+  } catch (error) {
+    if (error.message === 'Insufficient coin amount') {
+      res.status(400).json({ error: "Insufficient coins for this purchase" });
+    } else {
+      next(error);
+    }
+  }
+});
+
+router.post("/purchaseBackground", authenticateWithToken, async (req, res, next) => {
+  const { backgroundId } = req.body;
+  const userId = req.user.id;
+  const amountToDecrement = 100; 
+
+  try {
+    const ownedBackgrounds = await ProfileBackgroundService.getByUserId(userId);
+    const isOwned = ownedBackgrounds.some(background => background.backgroundId === backgroundId);
+
+    if (isOwned) {
+      return res.status(400).json({ error: "Background is already owned" });
+    }
+
+    await CoinService.purchase(userId, amountToDecrement);
+
+    try {
+      await ProfileBackgroundService.create({ userId, backgroundId });
+
+      res.status(200).json({ message: "Background purchased successfully" });
+    } catch (error) {
+      await CoinService.addCoins(userId, amountToDecrement);
+      res.status(500).json({ error: "Failed to purchase background, coins refunded" });
+    }
+  } catch (error) {
+    if (error.message === 'Insufficient coin amount') {
+      res.status(400).json({ error: "Insufficient coins for this purchase" });
+    } else {
+      next(error);
+    }
+  }
+});
+
+router.post("/changeProfilePicture", authenticateWithToken, async (req, res) => {
+  const { pictureId } = req.body;
+  const userId = req.user.id;
+
+  try {
+    const ownedPictures = await ProfilePictureService.getByUserId(userId);
+    console.log("OWNE DPICTURES: ", ownedPictures);
+    const isOwned = ownedPictures.some(picture => picture.pictureId === pictureId);
+
+    if (!isOwned) {
+      return res.status(403).json({ error: "Profile picture not owned by the user" });
+    }
+
+    await UserService.update(userId, { profile: pictureId });
+
+    res.status(200).json({ message: "Profile picture changed successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message || "Failed to change profile picture" });
+  }
+});
+
+router.post("/changeBackground", authenticateWithToken, async (req, res) => {
+  const { backgroundId } = req.body;
+  const userId = req.user.id;
+
+  try {
+    const ownedBackgrounds = await ProfileBackgroundService.getByUserId(userId);
+    const isOwned = ownedBackgrounds.some(background => background.backgroundId === backgroundId);
+
+    if (!isOwned) {
+      return res.status(403).json({ error: "Background not owned by the user" });
+    }
+
+    await UserService.update(userId, { backgroundId: backgroundId });
+
+    res.status(200).json({ message: "Background changed successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message || "Failed to change background" });
+  }
+});
 
 export default router;
