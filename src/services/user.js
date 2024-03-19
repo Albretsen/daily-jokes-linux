@@ -4,6 +4,8 @@ import { User } from "../models/init.js";
 import DatabaseError from "../models/error.js";
 import { generatePasswordHash, validatePassword } from "../utils/password.js";
 import Coin from "./coin.js";
+import ProfilePictureService from "./profile_picture.js";
+import ProfileBackgroundService from "./profile_background.js";
 
 const generateRandomToken = () =>
   randomBytes(48).toString("base64").replace(/[+/]/g, ".");
@@ -166,8 +168,24 @@ class UserService {
         userId: user.id,
       });
 
+      const backgroundIds = [0, 1]; 
+      for (const backgroundId of backgroundIds) {
+        await ProfileBackgroundService.create({
+            userId: user.id,
+            backgroundId: backgroundId.toString(),
+        });
+      }
+
+      const pictureIds = [0, 1, 2, 3, 4, 5]; 
+      for (const pictureId of pictureIds) {
+        await ProfilePictureService.create({
+            userId: user.id,
+            pictureId: pictureId.toString(),
+        });
+      }
+
       delete user.password;
-      return user;
+      return this.authenticateWithToken(user.token);
     } catch (err) {
       throw new DatabaseError(err);
     }

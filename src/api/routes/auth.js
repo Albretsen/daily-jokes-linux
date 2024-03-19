@@ -183,7 +183,7 @@ router.post("/purchaseProfilePicture", authenticateWithToken, async (req, res, n
     try {
       await ProfilePictureService.create({ userId, pictureId });
 
-      res.status(200).json({ message: "Profile picture purchased successfully" });
+      res.status(200).json({ message: "Profile picture purchased successfully", price: amountToDecrement });
     } catch (error) {
       await CoinService.addCoins(userId, amountToDecrement);
       res.status(500).json({ error: "Failed to purchase profile picture, coins refunded" });
@@ -215,14 +215,14 @@ router.post("/purchaseBackground", authenticateWithToken, async (req, res, next)
     try {
       await ProfileBackgroundService.create({ userId, backgroundId });
 
-      res.status(200).json({ message: "Background purchased successfully" });
+      return res.status(200).json({ message: "Background purchased successfully", price: amountToDecrement });
     } catch (error) {
       await CoinService.addCoins(userId, amountToDecrement);
-      res.status(500).json({ error: "Failed to purchase background, coins refunded" });
+      return res.status(500).json({ error: "Failed to purchase background, coins refunded" });
     }
   } catch (error) {
     if (error.message === 'Insufficient coin amount') {
-      res.status(400).json({ error: "Insufficient coins for this purchase" });
+      return res.status(400).json({ error: "Insufficient coins for this purchase" });
     } else {
       next(error);
     }
@@ -235,7 +235,6 @@ router.post("/changeProfilePicture", authenticateWithToken, async (req, res) => 
 
   try {
     const ownedPictures = await ProfilePictureService.getByUserId(userId);
-    console.log("OWNE DPICTURES: ", ownedPictures);
     const isOwned = ownedPictures.some(picture => picture.pictureId === pictureId);
 
     if (!isOwned) {
