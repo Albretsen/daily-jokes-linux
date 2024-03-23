@@ -22,13 +22,11 @@ const router = Router();
  */
 router.post("/webhook/revenuecat", async (req, res) => {
     try {
-    console.log("WEBHOOK: ");
       if (req.user.id !== 1) {
         throw new Error("Authentication error");
       }
   
       const { product_id, app_user_id } = req.body.event;
-      console.log("1: " + product_id + " | " + app_user_id);
   
       if (/^\d+_coins$/.test(product_id)) {
         await IAPService.processProductPurchase(product_id, app_user_id);
