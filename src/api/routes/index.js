@@ -11,6 +11,7 @@ import coinRouter from "./coin.js";
 import jokeSubmissionRouter from "./joke_submission.js";
 import notificationRouter from "./notification.js";
 import contestResultRouter from "./contest_result.js";
+import iapRouter from "./iap.js";
 import urls from "../urls.js";
 import spec from "../openapi.js";
 
@@ -54,6 +55,9 @@ router.use(urls.apiPrefix + urls.notification.path, notificationRouter);
 
 // ContestResult API
 router.use(urls.apiPrefix + urls.contestResult.path, contestResultRouter);
+
+// IAP API
+router.use(urls.apiPrefix + urls.iap.path, iapRouter);
 
 // Redirect browsers from index to API docs
 router.get("/", (req, res, next) => {

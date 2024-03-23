@@ -33,5 +33,8 @@ export default {
   },
   contestResult: {
     path: "/contestresult",
+  },
+  iap: {
+    path: "/iap",
   }
 };
