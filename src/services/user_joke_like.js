@@ -34,6 +34,31 @@ class UserJokeLikeService {
         }
     }
 
+    static async getUserContestJokePreferences(userId, contestId) {
+        try {
+            const likes = await UserJokeLike.findMany({
+                where: {
+                    userId: userId,
+                    contestId: contestId,
+                },
+                include: {
+                    joke: {
+                        include: {
+                            user: true 
+                        }
+                    }, 
+                }
+            });
+
+            const liked = likes.filter(like => like.value > 0).map(like => like.joke);
+            const disliked = likes.filter(like => like.value <= 0).map(like => like.joke);
+
+            return { liked, disliked };
+        } catch (err) {
+            throw new DatabaseError(err);
+        }
+    }
+
     static async list() {
         try {
             return UserJokeLike.findMany();

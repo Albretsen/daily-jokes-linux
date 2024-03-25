@@ -215,6 +215,70 @@ router.post("/search/swipe", async (req, res, next) => {
 
 /** @swagger
  *
+ * /joke/preferences:
+ *   get:
+ *     tags: [Joke]
+ *     summary: Get liked and disliked jokes by a specific user for a specific contest
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The ID of the user
+ *       - in: query
+ *         name: contestId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The ID of the contest
+ *     responses:
+ *       200:
+ *         description: An object containing arrays of liked and disliked jokes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 liked:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Joke'
+ *                 disliked:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Joke'
+ *       400:
+ *         description: Invalid input
+ *       404:
+ *         description: User or contest not found
+ */
+router.get("/preferences", async (req, res, next) => {
+  try {
+    const { userId, contestId } = req.query;
+
+    if (!userId || !contestId) {
+      return res.status(400).json({ error: "Missing userId or contestId in query parameters." });
+    }
+
+    const preferences = await UserJokeLikeService.getUserContestJokePreferences(parseInt(userId), parseInt(contestId));
+    
+    if (!preferences) {
+      return res.status(404).json({ error: "Preferences not found for the given user and contest." });
+    }
+
+    res.json(preferences);
+  } catch (error) {
+    if (error.isClientError && error.isClientError()) {
+      res.status(400).json({ error: error.message });
+    } else {
+      next(error);
+    }
+  }
+});
+
+/** @swagger
+ *
  * /joke/rate/{id}:
  *   get:
  *     tags: [Joke]
