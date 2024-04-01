@@ -44,6 +44,7 @@ class UserService {
           name: true,
           profile: true,
           createdAt: true,
+          backgroundId: true,
         },
       });
 
