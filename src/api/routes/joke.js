@@ -140,6 +140,7 @@ router.post("/search", async (req, res, next) => {
     const results = await JokeService.findByCriteria(criteria);
     res.json(results);
   } catch (error) {
+    console.log(error);
     if (error.isClientError && error.isClientError()) {
       res.status(400).json({ error: error.message });
     } else {

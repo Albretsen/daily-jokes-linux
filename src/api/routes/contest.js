@@ -55,6 +55,7 @@ router.get("", requireSchema(contestSchema), async (req, res, next) => {
 
         res.json([result]);
     } catch (error) {
+        console.log(error);
         if (error.isClientError && error.isClientError()) {
             res.status(400).json({ error: error.message });
         } else {
