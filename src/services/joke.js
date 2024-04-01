@@ -117,6 +117,7 @@ async function executeQuery(whereClause, orderByClause, { skip, take }) {
           select: {
             profile: true,
             name: true,
+            backgroundId: true,
           }
         },
       },
