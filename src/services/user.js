@@ -42,6 +42,7 @@ class UserService {
         select: {
           id: true,
           name: true,
+          role: true,
           profile: true,
           createdAt: true,
           backgroundId: true,

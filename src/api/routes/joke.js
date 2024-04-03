@@ -8,6 +8,7 @@ import JokeSubmissionService from "../../services/joke_submission.js";
 import UserJokeLikeService from "../../services/user_joke_like.js";
 import ContestService from "../../services/contest.js";
 import CoinService from "../../services/coin.js";
+import UserService from "../../services/user.js";
 
 const router = Router();
 
@@ -312,9 +313,12 @@ router.post("/rate/:id/:rating", requireValidId, async (req, res, next) => {
 
     let obj = await JokeService.get(req.params.id);
     let score = 0;
+    let boost = obj.boost ? obj.boost : 1;
 
     if (req.params.rating == "like") score = LIKE_VALUE;
     if (req.params.rating == "superlike") score = SUPER_LIKE_VALUE;
+
+    score = boost * score;
 
     if (obj) {
       obj = await JokeService.update(obj.id, { score: obj.score + score });
@@ -446,11 +450,16 @@ router.put(
  */
 router.delete("/:id", requireValidId, async (req, res, next) => {
   try {
-    const success = await JokeService.delete(req.params.id);
-    if (success) {
-      res.status(204).send();
+    const user = await UserService.get(req.user.id);
+    if (user.role == "moderator" || user.role == "admin") {
+      const success = await JokeService.delete(req.params.id);
+      if (success) {
+        res.status(204).send({});
+      } else {
+        res.status(404).json({ error: "Not found, nothing deleted" });
+      }
     } else {
-      res.status(404).json({ error: "Not found, nothing deleted" });
+      res.status(404).json({ error: "Unauthorized" });
     }
   } catch (error) {
     if (error.isClientError && error.isClientError()) {

@@ -269,4 +269,22 @@ router.post("/changeBackground", authenticateWithToken, async (req, res) => {
   }
 });
 
+router.post("/public/:id", authenticateWithToken, async (req, res, next) => {
+  try {
+      const result = await UserService.getPublicUserInfo(parseInt(req.params.id));
+      if (result) {
+        res.status(200).send({ user: result });
+      } else {
+        res.status(404).json({ error: "Not found, nothing deleted" });
+      }
+  } catch (error) {
+    console.log(error);
+    if (error.isClientError && error.isClientError()) {
+      res.status(400).json({ error: error.message });
+    } else {
+      next(error);
+    }
+  }
+});
+
 export default router;
