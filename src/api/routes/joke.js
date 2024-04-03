@@ -7,6 +7,7 @@ import { GenerateJokeJSON } from "../../utils/joke.js";
 import JokeSubmissionService from "../../services/joke_submission.js";
 import UserJokeLikeService from "../../services/user_joke_like.js";
 import ContestService from "../../services/contest.js";
+import CoinService from "../../services/coin.js";
 
 const router = Router();
 
@@ -452,6 +453,48 @@ router.delete("/:id", requireValidId, async (req, res, next) => {
       res.status(404).json({ error: "Not found, nothing deleted" });
     }
   } catch (error) {
+    if (error.isClientError && error.isClientError()) {
+      res.status(400).json({ error: error.message });
+    } else {
+      next(error);
+    }
+  }
+});
+
+/** @swagger
+ *
+ * /joke/boost/{id}:
+ *   delete:
+ *     tags: [Joke]
+ *     summary: Boost Joke with the specified id
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       204:
+ *        description: OK, object deleted
+ */
+router.post("/boost/:id", async (req, res, next) => {
+  try {
+    const joke = await JokeService.get(parseInt(req.params.id));
+    if (joke.userId != req.user.id) {
+      res.status(404).json({ error: "Unauthorized" });
+    } else {
+      await CoinService.purchase(req.user.id, 50);
+      const success = await JokeService.update(parseInt(req.params.id), { boost: 2 });
+      if (success) {
+        res.status(200).send({});
+      } else {
+        res.status(404).json({ error: "Not found, nothing deleted" });
+      }
+    }
+  } catch (error) {
+    console.log(error);
     if (error.isClientError && error.isClientError()) {
       res.status(400).json({ error: error.message });
     } else {

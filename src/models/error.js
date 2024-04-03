@@ -6,7 +6,11 @@ class DatabaseError extends Error {
   }
 
   isClientError() {
-    return this.code.startsWith("P2");
+    if (typeof this.code === 'string' && this.code.startsWith("P2")) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
 
