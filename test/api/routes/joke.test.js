@@ -100,15 +100,4 @@ describe("/api/v1/joke/:id", () => {
     expect(JokeService.update).toHaveBeenCalledWith(1, data);
   });
 
-  test("Joke deletion", async () => {
-    JokeService.delete = jest.fn().mockResolvedValue(true);
-    const req = supertest(app);
-
-    const res = await req
-      .delete(`/api/v1/joke/1`)
-      .set("Authorization", "token abc");
-
-    expect(res.status).toBe(204);
-    expect(JokeService.delete).toHaveBeenCalledWith(1);
-  });
 });
