@@ -24,6 +24,7 @@ model User {
   backgroundId  String?  @default("0") @db.VarChar(255)
   jokes         Joke[]
   expoPushToken String   @default("") @db.VarChar(255)
+  role          String   @default("user") @db.VarChar(255)
 
   Coin           Coin[]
   JokeSubmission JokeSubmission[]
@@ -55,6 +56,7 @@ model Joke {
   createTimeStamp DateTime
   score           Float
   contestId       Int
+  boost           Float    @default(0)
   user            User     @relation(fields: [userId], references: [id])
   contest         Contest  @relation(fields: [contestId], references: [id])
 
