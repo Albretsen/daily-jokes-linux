@@ -480,15 +480,16 @@ router.delete("/:id", requireValidId, async (req, res, next) => {
  *        description: OK, object deleted
  */
 router.post("/boost/:id", async (req, res, next) => {
+  const price = 50;
   try {
     const joke = await JokeService.get(parseInt(req.params.id));
     if (joke.userId != req.user.id) {
       res.status(404).json({ error: "Unauthorized" });
     } else {
-      await CoinService.purchase(req.user.id, 50);
+      await CoinService.purchase(req.user.id, price);
       const success = await JokeService.update(parseInt(req.params.id), { boost: 2 });
       if (success) {
-        res.status(200).send({});
+        res.status(200).send({ price: price });
       } else {
         res.status(404).json({ error: "Not found, nothing deleted" });
       }
