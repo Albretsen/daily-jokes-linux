@@ -25,7 +25,7 @@ router.get("", async (req, res, next) => {
     const results = await CoinService.get(req.user.id);
     res.json(results);
   } catch (error) {
-    res.status(400).json({ error });
+    res.json({coins: 0});
   }
 });
 

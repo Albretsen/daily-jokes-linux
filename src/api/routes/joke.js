@@ -451,7 +451,8 @@ router.put(
 router.delete("/:id", requireValidId, async (req, res, next) => {
   try {
     const user = await UserService.get(req.user.id);
-    if (user.role == "moderator" || user.role == "admin") {
+    const joke = await JokeService.get(req.params.id);
+    if (user.role == "moderator" || user.role == "admin" || joke.userId == req.user.id) {
       const success = await JokeService.delete(req.params.id);
       if (success) {
         res.status(204).send({});

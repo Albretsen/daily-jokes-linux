@@ -21,6 +21,11 @@ const router = Router();
  *         description: ContestResult object
  */
 router.get("/unread", async (req, res) => {
+    if (!req.user?.id) {
+        res.status(400).json({ error: "Unauthorized" });
+        return;
+    }
+
     const checkInterval = 5000; 
     const maxWaitTime = 60000; 
 
