@@ -450,27 +450,19 @@ router.put(
  */
 router.delete("/:id", requireValidId, async (req, res, next) => {
   try {
-    console.log("DELETING: " + req.params.id);
     const user = await UserService.get(req.user.id);
-    console.log(user);
     const joke = await JokeService.get(parseInt(req.params.id));
-    console.log(joke);
     if (user.role == "moderator" || user.role == "admin" || joke.userId == req.user.id) {
-      console.log("AUTHROIZED");
       const success = await JokeService.delete(req.params.id);
       if (success) {
-        console.log("SUCCESS");
-        res.status(204).send({});
+        res.status(200).send({ succes: true });
       } else {
-        console.log("NOT SUCCES");
         res.status(404).json({ error: "Not found, nothing deleted" });
       }
     } else {
       res.status(404).json({ error: "Unauthorized" });
     }
   } catch (error) {
-    console.log("major error:");
-    console.log(error);
     if (error.isClientError && error.isClientError()) {
       res.status(400).json({ error: error.message });
     } else {
