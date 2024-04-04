@@ -11,28 +11,28 @@ generator client {
 }
 
 model User {
-  id            Int      @id @default(autoincrement())
-  email         String   @unique @db.VarChar(255)
-  password      String   @db.VarChar(255)
-  token         String   @unique @db.VarChar(255)
-  deviceID      String?  @default("") @db.VarChar(255)
-  name          String   @db.VarChar(255)
-  createdAt     DateTime @default(now())
-  lastLoginAt   DateTime @default(now())
-  isActive      Boolean  @default(true)
-  profile       String?  @default("0") @db.VarChar(255)
-  backgroundId  String?  @default("0") @db.VarChar(255)
-  jokes         Joke[]
-  expoPushToken String   @default("") @db.VarChar(255)
-  role          String   @default("user") @db.VarChar(255)
-
-  Coin           Coin[]
-  JokeSubmission JokeSubmission[]
-  UserJokeLike   UserJokeLike[]
-  Notification   Notification[]
-  ContestResult  ContestResult[]
-  profilePictures ProfilePicture[]
+  id                Int                @id @default(autoincrement())
+  email             String             @unique @db.VarChar(255)
+  password          String             @db.VarChar(255)
+  token             String             @unique @db.VarChar(255)
+  deviceID          String?            @default("") @db.VarChar(255)
+  name              String             @db.VarChar(255)
+  createdAt         DateTime           @default(now())
+  lastLoginAt       DateTime           @default(now())
+  isActive          Boolean            @default(true)
+  profile           String?            @default("0") @db.VarChar(255)
+  backgroundId      String?            @default("0") @db.VarChar(255)
+  jokes             Joke[]
+  expoPushToken     String             @default("") @db.VarChar(255)
+  role              String             @default("user") @db.VarChar(255)
+  Coin              Coin[]
+  JokeSubmission    JokeSubmission[]
+  UserJokeLike      UserJokeLike[]
+  Notification      Notification[]
+  ContestResult     ContestResult[]
+  profilePictures   ProfilePicture[]
   profileBackgrounds ProfileBackground[]
+
   @@index([email])
   @@index([token])
 }
@@ -50,18 +50,18 @@ model Contest {
 }
 
 model Joke {
-  id              Int      @id @default(autoincrement())
+  id              Int              @id @default(autoincrement())
   userId          Int
   textBody        String
   createTimeStamp DateTime
   score           Float
   contestId       Int
-  boost           Float    @default(0)
-  user            User     @relation(fields: [userId], references: [id])
-  contest         Contest  @relation(fields: [contestId], references: [id])
+  boost           Float            @default(0)
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contest         Contest          @relation(fields: [contestId], references: [id], onDelete: Cascade)
+  UserJokeLike    UserJokeLike[]   
+  ContestResult   ContestResult[]  
 
-  UserJokeLike  UserJokeLike[]
-  ContestResult ContestResult[]
   @@index([userId])
   @@index([contestId])
 }
@@ -70,7 +70,7 @@ model Coin {
   id     Int  @id @default(autoincrement())
   userId Int  @unique
   coins  Int  @default(0)
-  user   User @relation(fields: [userId], references: [id])
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model JokeSubmission {
@@ -79,17 +79,10 @@ model JokeSubmission {
   contestId                Int
   jokesSubmitted           Int     @default(0)
   additionalSlotsPurchased Int     @default(0)
-  user                     User    @relation(fields: [userId], references: [id])
-  contest                  Contest @relation(fields: [contestId], references: [id])
+  user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contest                  Contest @relation(fields: [contestId], references: [id], onDelete: Cascade)
 
   @@unique([userId, contestId])
-}
-
-model JokeDataset {
-  id       Int    @id @default(autoincrement())
-  body     String
-  category String
-  title    String
 }
 
 model UserJokeLike {
@@ -99,10 +92,9 @@ model UserJokeLike {
   contestId Int
   value     Int
   likedAt   DateTime @default(now())
-
-  user    User    @relation(fields: [userId], references: [id])
-  joke    Joke    @relation(fields: [jokeId], references: [id])
-  contest Contest @relation(fields: [contestId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  joke      Joke     @relation(fields: [jokeId], references: [id], onDelete: Cascade)
+  contest   Contest  @relation(fields: [contestId], references: [id], onDelete: Cascade)
 
   @@unique([userId, jokeId, contestId], name: "user_joke_contest_unique")
 }
@@ -118,7 +110,7 @@ model Notification {
   expoId    String   @default("")
   data      Json?
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -128,14 +120,13 @@ model ContestResult {
   contestId Int
   userId    Int
   coins     Int     @default(0)
-  jokeId    Int // ID of the highest-scoring joke submitted by the user in the contest
-  score     Float // Score of the highest-scoring joke
-  rank      Int? // The ranking of the user in this specific contest, based on their highest-scoring joke
+  jokeId    Int
+  score     Float
+  rank      Int?
   read      Boolean @default(false)
-
-  contest Contest @relation(fields: [contestId], references: [id])
-  user    User    @relation(fields: [userId], references: [id])
-  joke    Joke    @relation(fields: [jokeId], references: [id])
+  contest   Contest @relation(fields: [contestId], references: [id], onDelete: Cascade)
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  joke      Joke    @relation(fields: [jokeId], references: [id], onDelete: Cascade)
 
   @@unique([contestId, userId])
   @@index([contestId])
@@ -146,19 +137,26 @@ model ContestResult {
 model ProfilePicture {
   id        Int    @id @default(autoincrement())
   userId    Int
-  pictureId String @db.VarChar(255) // Assumes picture ID is a string; adjust type as necessary
-  user      User   @relation(fields: [userId], references: [id])
+  pictureId String @db.VarChar(255)
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 
   @@index([userId])
 }
 
 model ProfileBackground {
-  id        Int    @id @default(autoincrement())
-  userId    Int
-  backgroundId String @db.VarChar(255) // Assumes picture ID is a string; adjust type as necessary
-  user      User   @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
+  id            Int    @id @default(autoincrement())
+  userId        Int
+  backgroundId  String @db.VarChar(255)
+  user          User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
 
   @@index([userId])
+}
+
+model JokeDataset {
+  id       Int    @id @default(autoincrement())
+  body     String
+  category String
+  title    String
 }
