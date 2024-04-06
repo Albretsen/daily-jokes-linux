@@ -145,7 +145,11 @@ router.post(urls.auth.logout, async (req, res) => {
  *         description: Successfully updated all columns
  */
 router.post(urls.auth.update, [authenticateWithToken, requireSchema(updateSchema)], async (req, res) => {
-  await UserService.update(req.user.id, req.body);
+  try {
+    await UserService.update(req.user.id, req.body);
+  } catch (error) {
+    console.log(error.message);
+  }
   res.status(200).send({ success: true });
 });
 

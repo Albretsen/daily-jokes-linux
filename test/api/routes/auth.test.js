@@ -108,7 +108,7 @@ describe("/api/v1/auth/password", () => {
       .set("Authorization", "Token abc")
       .send({ password: "secret" });
 
-    expect(res.status).toBe(204);
+    expect(res.status).toBe(200);
     expect(res.body).not.toHaveProperty("password");
     expect(UserService.setPassword).toHaveBeenCalledWith(user, "secret");
   });
