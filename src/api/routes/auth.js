@@ -146,7 +146,7 @@ router.post(urls.auth.logout, async (req, res) => {
  */
 router.post(urls.auth.update, [authenticateWithToken, requireSchema(updateSchema)], async (req, res) => {
   await UserService.update(req.user.id, req.body);
-  res.status(204).send();
+  res.status(200).send({ success: true });
 });
 
 router.get(urls.auth.logout, (req, res) => {
@@ -160,7 +160,7 @@ router.post(
     const { password } = req.validatedBody;
 
     await UserService.setPassword(req.user, password.toString());
-    res.status(204).send();
+    res.status(200).send({ success: true });
   }
 );
 
