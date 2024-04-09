@@ -138,7 +138,7 @@ class UserService {
 
   static async authenticateWithToken(token) {
     try {
-      const user = await User.findUnique({
+      let user = await User.findUnique({
         where: { token },
         include: {
           profilePictures: true,
@@ -148,6 +148,7 @@ class UserService {
       if (!user) return null;
 
       delete user.password;
+      user = { ...user, token: token }
       return user;
     } catch (err) {
       throw new DatabaseError(err);

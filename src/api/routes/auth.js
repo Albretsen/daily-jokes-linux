@@ -113,6 +113,7 @@ router.post(
  *         description: Successful login, token validated
  */
 router.post(urls.auth.loginWithToken, authenticateWithToken, async (req, res) => {
+  console.log(req.user);
   res.json({ user: req.user });
 });
 
@@ -149,6 +150,7 @@ router.post(urls.auth.update, [authenticateWithToken, requireSchema(updateSchema
     await UserService.update(req.user.id, req.body);
   } catch (error) {
     console.log(error.message);
+    if (error.code == "P2002") res.status(200).send({ success: false, error: "Email already in use." });
   }
   res.status(200).send({ success: true });
 });
