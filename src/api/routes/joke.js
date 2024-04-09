@@ -304,6 +304,7 @@ router.get("/preferences", async (req, res, next) => {
  */
 const LIKE_VALUE = 1;
 const SUPER_LIKE_VALUE = 3;
+const SUPER_LIKE_PRICE = 50;
 router.post("/rate/:id/:rating", requireValidId, async (req, res, next) => {
   try {
     if (await UserJokeLikeService.verifyJokeNotAlreadyLiked(req.params.id, req.user.id)) {
@@ -321,6 +322,14 @@ router.post("/rate/:id/:rating", requireValidId, async (req, res, next) => {
     score = boost * score;
 
     if (obj) {
+      if (req.params.rating == "superlike") {
+        try {
+          await CoinService.purchase(req.user.id, SUPER_LIKE_PRICE);
+        } catch {
+          res.status(200).json({ success: false, error: "Not enough coins." });
+          return;
+        }
+      }
       obj = await JokeService.update(obj.id, { score: obj.score + score });
       await UserJokeLikeService.create({
         userId: req.user.id,
@@ -328,6 +337,7 @@ router.post("/rate/:id/:rating", requireValidId, async (req, res, next) => {
         contestId: obj.contestId,
         value: score,
       });
+      obj = { ...obj, price: SUPER_LIKE_PRICE }
       res.json(obj);
     } else {
       res.status(404).json({ error: "Resource not found" });
