@@ -113,7 +113,6 @@ router.post(
  *         description: Successful login, token validated
  */
 router.post(urls.auth.loginWithToken, authenticateWithToken, async (req, res) => {
-  console.log(req.user);
   res.json({ user: req.user });
 });
 

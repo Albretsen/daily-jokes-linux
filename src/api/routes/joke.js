@@ -506,7 +506,12 @@ router.post("/boost/:id", async (req, res, next) => {
     if (joke.userId != req.user.id) {
       res.status(404).json({ error: "Unauthorized" });
     } else {
-      await CoinService.purchase(req.user.id, price);
+      try {
+        await CoinService.purchase(req.user.id, price);
+      } catch {
+        res.status(200).send({ success: false, error: "Not enough coins.", price: price });
+        return;
+      }
       const success = await JokeService.update(parseInt(req.params.id), { boost: 2 });
       if (success) {
         res.status(200).send({ price: price });

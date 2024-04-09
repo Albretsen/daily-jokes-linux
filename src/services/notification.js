@@ -69,8 +69,6 @@ class NotificationService {
                 throw new Error(`Errors occurred with some notifications: ${errorMessages.join("; ")}`);
             }
 
-            console.log(jsonResponse);
-
             return jsonResponse;
         } catch (error) {
             console.error("Error sending Expo notifications:", error);
@@ -102,7 +100,6 @@ class NotificationService {
     }
 
     static async create(data) {
-        console.log("hey 2");
         try {
             return await Notification.create({ data });
         } catch (err) {
