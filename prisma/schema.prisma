@@ -69,7 +69,7 @@ model Joke {
 model Coin {
   id     Int  @id @default(autoincrement())
   userId Int  @unique
-  coins  Int  @default(0)
+  coins  Int  @default(50)
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 

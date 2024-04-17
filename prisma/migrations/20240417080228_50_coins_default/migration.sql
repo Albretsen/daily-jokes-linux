@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Coin" ALTER COLUMN "coins" SET DEFAULT 50;
