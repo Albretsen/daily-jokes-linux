@@ -6,12 +6,13 @@ class JokeSubmissionService {
     static async purchaseAdditionalSlot(userId) {
         try {
             const contestDetails = await ContestService.getCurrentContest();
-            await CoinService.purchase(userId, 10); 
 
             const submission = await JokeSubmissionService.get(userId, contestDetails.id);
             if (!submission) {
                 throw new Error('Submission not found');
             }
+
+            await CoinService.purchase(userId, 50); 
 
             const updatedSubmission = await JokeSubmissionService.update(submission.id, { additionalSlotsPurchased: submission.additionalSlotsPurchased + 1 });
 
