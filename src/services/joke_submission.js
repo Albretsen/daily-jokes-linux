@@ -12,6 +12,10 @@ class JokeSubmissionService {
                 throw new Error('Submission not found');
             }
 
+            if (submission.additionalSlotsPurchased - submission.jokesSubmitted >= 0) {
+                throw Error("Max submissions reached");
+            }
+
             await CoinService.purchase(userId, 50); 
 
             const updatedSubmission = await JokeSubmissionService.update(submission.id, { additionalSlotsPurchased: submission.additionalSlotsPurchased + 1 });
