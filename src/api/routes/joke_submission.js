@@ -50,7 +50,10 @@ router.post("/purchase", async (req, res, next) => {
             res.status(400).json({ error: error.message });
         } else if (error.message == 'Insufficient coin amount') {
             res.status(400).json({ error });
-        } else {
+        } else if (error.message == 'Max submissions reached') {
+            res.status(400).json({ error });
+        }
+        else {
             next(error);
         }
     }
